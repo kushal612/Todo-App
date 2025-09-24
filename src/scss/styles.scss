@@ -1,2 +1,25 @@
 // Import all of Bootstrap’s CSS
 @import "bootstrap/scss/bootstrap";
+
+body {
+  font-family: Arial;
+  text-align: center;
+  background-color: #262626;
+  color: antiquewhite;
+  .name-input,
+  .due-date-input {
+    border: none;
+    border-radius: 4px;
+    font-size: 20px;
+    padding: 8px;
+  }
+  .add-todo-button {
+    background-color: green;
+    border-radius: 4px;
+    padding: 8px;
+    color: white;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+  }
+}

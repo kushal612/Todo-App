@@ -7,15 +7,20 @@
     <script type="module" src="./js/main.js"></script>
   </head>
   <body>
-    <p>Todo List</p>
-    <div class="todo">
-      <div class="todo-input-grid">
-        <input placeholder="Todo name" class="js-name-input name-input" />
-        <input type="date" class="js-due-date-input due-date-input" />
-        <button class="add-todo-button">Add</button>
+    <h1 class="text-center">Todo List</h1>
+    <div class="container todo">
+      <div
+        class="row row-cols-2 d-flex flex-column flex-md-row justify-content-center align-items-center gap-3"
+      >
+        <div class="col-12 col-md-6 text-center todo-input-grid">
+          <input placeholder="Todo name" class="js-name-input name-input" />
+        </div>
+        <div class="col-12 col-md-6 text-center">
+          <input type="date" class="js-due-date-input due-date-input" />
+          <button class="add-todo-button">Add</button>
+        </div>
       </div>
-
-      <div class="js-todo-list todo-grid"></div>
     </div>
+    <div class="mt-4 js-todo-list todo-grid"></div>
   </body>
 </html>
