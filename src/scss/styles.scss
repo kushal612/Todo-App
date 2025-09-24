@@ -23,3 +23,20 @@ body {
     cursor: pointer;
   }
 }
+
+.name-todo {
+  color: white;
+  font-size: 30px;
+  .delete-todo-button {
+    background-color: rgba(234, 49, 49, 0.739);
+    font-size: 20px;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px;
+  }
+}
+.due-date-todo {
+  font-size: 20px;
+  color: white;
+}
