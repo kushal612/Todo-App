@@ -85,7 +85,7 @@ function addTask(text, importance, tags) {
     done: false,
     importance: importance,
     tags: tags
-      .split(/[\s,]+/) // Split by space or comma
+      .split(/[\s,]+/)
       .filter((tag) => tag.trim() !== "")
       .map((tag) => tag.trim().toLowerCase()),
     createdOn: now,
@@ -105,7 +105,7 @@ function toggleDone(id) {
   const t = tasks.find((x) => x.id === id);
   if (t) {
     t.done = !t.done;
-    t.updatedOn = new Date().toISOString(); // Update timestamp on toggle
+    t.updatedOn = new Date().toISOString();
     saveTask();
     renderTask();
   }
@@ -117,7 +117,7 @@ function openEditModal(id) {
     taskIdToEdit = id;
     editTaskInput.value = task.text;
     editImportanceSelect.value = task.importance;
-    editTagsInput.value = task.tags.join(", "); // Show tags as comma-separated string
+    editTagsInput.value = task.tags.join(", ");
     editModal.show();
   }
 }
@@ -188,7 +188,6 @@ function renderTask() {
     if (currentFilter === "current" && t.done) return false;
     if (currentFilter === "completed" && !t.done) return false;
 
-    // Search logic: check text OR tags
     if (
       q &&
       !t.text.toLowerCase().includes(q) &&
@@ -199,11 +198,9 @@ function renderTask() {
     return true;
   });
 
-  // Sort by importance (High > Medium > Low), then by creation date
   visible.sort((a, b) => {
     const importanceOrder = { high: 3, medium: 2, low: 1 };
 
-    // Use the OR operator (||) to safely fall back to 'medium' if importance is missing
     const aImportance = a.importance ? a.importance.toLowerCase() : "medium";
     const bImportance = b.importance ? b.importance.toLowerCase() : "medium";
 
@@ -213,7 +210,6 @@ function renderTask() {
     if (importanceDiff !== 0) {
       return importanceDiff;
     }
-    // Secondary sort by creation date (newest first)
     return new Date(b.createdOn) - new Date(a.createdOn);
   });
 
@@ -224,7 +220,6 @@ function renderTask() {
   } else {
     visible.forEach((t) => {
       const el = document.createElement("div");
-      // Added list-group-item and d-flex for better Bootstrap integration
       el.className = `task-item task-importance-${t.importance.toLowerCase()} list-group-item d-flex align-items-start ${
         t.done ? "completed" : ""
       }`;
@@ -277,7 +272,6 @@ function renderTask() {
         </div>
       `;
 
-      // Event Listeners for the task item
       el.querySelector("input").addEventListener("change", () =>
         toggleDone(t.id)
       );
@@ -288,7 +282,7 @@ function renderTask() {
 
       el.querySelector(".btn-delete").addEventListener("click", () => {
         taskIdToDelete = t.id;
-        deleteModal.show(); // Show delete confirmation modal
+        deleteModal.show();
       });
 
       tasksList.appendChild(el);
@@ -299,9 +293,6 @@ function renderTask() {
   remainingCount.innerText = `${remaining} remaining`;
 }
 
-// --- Event Listeners ---
-
-// Add Task (Default to 'medium' importance and no tags for simple input)
 addBtn.addEventListener("click", () => {
   addTask(inputTask.value, imp.value, tag.value);
   inputTask.value = "";
@@ -313,19 +304,15 @@ inputTask.addEventListener("keydown", (e) => {
   }
 });
 
-// Filters
 filters.addEventListener("click", (e) => {
   if (e.target.closest("button"))
     applyFilter(e.target.closest("button").dataset.filter);
 });
 
-// Search
 searchInput.addEventListener("input", renderTask);
 
-// Clear Completed
 clearCompleted.addEventListener("click", clearCompletedTasks);
 
-// Clear All Confirmation
 clearAll.addEventListener("click", () => {
   clearAllModal.show();
 });
@@ -335,10 +322,8 @@ confirmClearAllBtn.addEventListener("click", () => {
   clearAllModal.hide();
 });
 
-// Save Edit Handler
 saveEditBtn.addEventListener("click", saveEditedTask);
 
-// Delete Confirmation Handler
 confirmDeleteBtn.addEventListener("click", () => {
   if (taskIdToDelete) {
     deleteTask(taskIdToDelete);
@@ -347,6 +332,5 @@ confirmDeleteBtn.addEventListener("click", () => {
   }
 });
 
-// --- Initialization ---
 loadTasks(impOrder);
 renderTask();
