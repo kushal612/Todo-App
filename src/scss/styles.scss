@@ -1,42 +1,157 @@
 // Import all of Bootstrap’s CSS
 @import "bootstrap/scss/bootstrap";
 
+:root {
+  //--bg: linear-gradient(135deg, #0f172a 0%, #0b75d4 100%);
+  --card: #ffffff;
+  --accent: #ffd166;
+}
 body {
-  font-family: Arial;
-  text-align: center;
-  background-color: #262626;
-  color: antiquewhite;
-  .name-input,
-  .due-date-input {
-    border: none;
-    border-radius: 4px;
-    font-size: 20px;
-    padding: 8px;
+  //background: var(--bg);
+  background: #828282;
+  color: black;
+  font-family: Montserrat;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.todo-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 1rem;
+  background: var(--card);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.task-input {
+  flex: 1;
+  border-color: rgba(0, 0, 0, 0.42);
+  border-radius: 5px;
+  background: white;
+  color: black;
+}
+.task-input::placeholder {
+  color: #bbb;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
+}
+.task-item.completed .task-text {
+  text-decoration: line-through;
+  color: #aaa;
+}
+.task-text {
+  flex: 1;
+  margin-left: 0.5rem;
+  word-break: break-word;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: space-between;
+  margin: 0.5rem 0 1rem;
+}
+
+.tasks-list {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+.tasks-list::-webkit-scrollbar {
+  width: 6px;
+}
+.tasks-list::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 3px;
+}
+
+@media (max-width: 576px) {
+  .todo-container {
+    margin: 0.5rem;
+    padding: 0.75rem;
   }
-  .add-todo-button {
-    background-color: green;
-    border-radius: 4px;
-    padding: 8px;
-    color: white;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 
-.name-todo {
-  color: white;
-  font-size: 30px;
-  .delete-todo-button {
-    background-color: rgba(234, 49, 49, 0.739);
-    font-size: 20px;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 5px;
+.cancel-btn {
+  background-color: #ccc;
+  color: black;
+}
+
+.delete-btn {
+  background-color: #f44336;
+}
+
+.container {
+  padding: 16px;
+  text-align: center;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 25%;
+  top: 10%;
+  width: 50%;
+  height: 100%;
+  overflow: auto;
+  background-color: transparent;
+  padding-top: 50px;
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto 15% auto;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+hr {
+  border: 1px solid #f1f1f1;
+  margin-bottom: 25px;
+}
+
+.close {
+  position: absolute;
+  right: 35px;
+  top: 15px;
+  font-size: 40px;
+  font-weight: bold;
+  color: #f1f1f1;
+}
+
+.close:hover,
+.close:focus {
+  color: #f44336;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 300px) {
+  .cancel-btn,
+  .delete-btn {
+    width: 100%;
   }
 }
-.due-date-todo {
-  font-size: 20px;
-  color: white;
+
+.heading {
+  background-color: #bbb;
+  min-width: 100%;
 }
