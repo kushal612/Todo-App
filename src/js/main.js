@@ -299,7 +299,7 @@ addBtn.addEventListener("click", () => {
 });
 inputTask.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
-    addTask(inputTask.value, imp.value, tag.Value);
+    addTask(inputTask.value, imp.value, tag.value);
     inputTask.value = "";
   }
 });
