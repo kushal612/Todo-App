@@ -9,7 +9,7 @@ $danger: #dc3545;
 $info: #17a2b8;
 
 :root {
-  --card: #ffffff;
+  --card: #f7f5f5fc;
   --accent: #ffd166;
   --bg-color: #828282;
 }
@@ -32,7 +32,7 @@ body {
   width: 100%;
   max-width: 650px;
   background: var(--card);
-  border-radius: 12px;
+  border-radius: 20px;
   padding: 1.5rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
@@ -42,6 +42,7 @@ body {
   border-color: #ced4da;
   border-radius: 0.25rem;
   padding: 0.5rem 0.75rem;
+  border-radius: 5px;
   @extend .form-control;
 }
 .task-input::placeholder {

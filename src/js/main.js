@@ -12,11 +12,8 @@ const addBtn = document.getElementById("addBtn");
 const tasksList = document.getElementById("tasksList");
 const imp = document.getElementById("impOrder");
 const tag = document.getElementById("tagInput");
-const tagValue = tag.value;
-const impOrder = imp.value;
-
-console.log(impOrder);
-console.log(tagValue);
+// const tagValue = tag.value;
+// const impOrder = imp.value;
 
 const filters = document.getElementById("filters");
 const searchInput = document.getElementById("searchInput");
@@ -24,20 +21,17 @@ const clearCompleted = document.getElementById("clearCompleted");
 const clearAll = document.getElementById("clearAll");
 const remainingCount = document.getElementById("remainingCount");
 
-// Elements for the Edit Modal
 const editModal = new bootstrap.Modal(document.getElementById("editModal"));
 const editTaskInput = document.getElementById("editTaskInput");
 const editImportanceSelect = document.getElementById("editImportanceSelect");
 const editTagsInput = document.getElementById("editTagsInput");
 const saveEditBtn = document.getElementById("saveEditBtn");
 
-// Elements for the Clear All Confirmation Modal
 const clearAllModal = new bootstrap.Modal(
   document.getElementById("clearAllModal")
 );
 const confirmClearAllBtn = document.getElementById("confirmClearAllBtn");
 
-// Elements for the Delete Confirmation Modal
 const deleteModal = new bootstrap.Modal(document.getElementById("deleteModal"));
 const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
 
@@ -51,13 +45,12 @@ function uId() {
 function loadTasks() {
   tasks = JSON.parse(localStorage.getItem("task")) || [];
 
-  // Data Migration: Ensure all loaded tasks have new properties
   tasks = tasks.map((t) => ({
-    ...t, // Keep existing properties
+    ...t,
     importance: t.importance,
-    tags: Array.isArray(t.tags) ? t.tags : [], // Default to empty array if missing or not an array
-    createdOn: t.createdOn || new Date().toISOString(), // Default to current time if missing
-    updatedOn: t.updatedOn || t.createdOn || new Date().toISOString(), // Default to createdOn or current time
+    tags: Array.isArray(t.tags) ? t.tags : [],
+    createdOn: t.createdOn,
+    updatedOn: t.updatedOn || t.createdOn,
   }));
 }
 
@@ -68,7 +61,6 @@ function saveTask() {
 function formatDate(dateString) {
   const date = new Date(dateString);
   const dateOptions = {
-    year: "numeric",
     month: "short",
     day: "numeric",
   };
@@ -168,7 +160,6 @@ function clearAllTask() {
 
 function applyFilter(flt) {
   currentFilter = flt;
-  // Use 'active' class for Bootstrap styling
   Array.from(filters.querySelectorAll("button")).forEach((b) =>
     b.classList.toggle("active", b.dataset.filter === flt)
   );
@@ -270,17 +261,18 @@ function renderTask() {
               }
             </div>
             <div class="mt-1">
-              <span class="me-3" title="Created On">Created: ${formatDate(
-                t.createdOn
-              )}</span>
-              ${
-                t.createdOn !== t.updatedOn
-                  ? `<span title="Last Updated">Updated: ${formatDate(
-                      t.updatedOn
-                    )}</span>`
-                  : ""
-              }
-            </div>
+          <span class="me-3 createdTime" title="Created On">${formatDate(
+            t.createdOn
+          )}</span>
+          </br>
+          ${
+            t.createdOn !== t.updatedOn
+              ? `<span class="me-3 updatedTime" title="Updated On">Updated: ${formatDate(
+                  t.updatedOn
+                )}</span>`
+              : ""
+          }
+        </div>
           </div>
         </div>
       `;
@@ -311,12 +303,12 @@ function renderTask() {
 
 // Add Task (Default to 'medium' importance and no tags for simple input)
 addBtn.addEventListener("click", () => {
-  addTask(inputTask.value, impOrder, tagValue);
+  addTask(inputTask.value, imp.value, tag.value);
   inputTask.value = "";
 });
 inputTask.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
-    addTask(inputTask.value, impOrder, tagValue);
+    addTask(inputTask.value, imp.value, tag.Value);
     inputTask.value = "";
   }
 });
