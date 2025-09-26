@@ -121,7 +121,7 @@ body {
   }
   &.task-importance-low {
     border-left-color: $danger;
-    background-color: lighten($danger, 45%);
+    background-color: lighten($danger, 40%);
   }
 
   &.completed {
