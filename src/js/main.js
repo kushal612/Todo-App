@@ -341,28 +341,28 @@ function renderTask() {
 addBtn.addEventListener("click", () => {
   addTask(inputTask.value, imp.value, tag.value);
   inputTask.value = "";
-  imp.value = "";
+  tag.value = "";
 });
 
 inputTask.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     addTask(inputTask.value, imp.value, tag.value);
     inputTask.value = "";
-    imp.value = "";
+    tag.value = "";
   }
 });
 tag.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     addTask(inputTask.value, imp.value, tag.value);
     inputTask.value = "";
-    imp.value = "";
+    tag.value = "";
   }
 });
 imp.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     addTask(inputTask.value, imp.value, tag.value);
     inputTask.value = "";
-    imp.value = "";
+    tag.value = "";
   }
 });
 
