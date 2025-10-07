@@ -68,10 +68,29 @@
             Completed
           </button>
         </div>
+
+        <div class="d-flex flex-row gap-1">
+          <button
+            class="btn btn-outline-secondary priority active"
+            data-filter="all"
+          >
+            All
+          </button>
+          <button class="btn btn-outline-success priority" data-filter="high">
+            High
+          </button>
+          <button class="btn btn-outline-warning priority" data-filter="medium">
+            Medium
+          </button>
+          <button class="btn btn-outline-danger priority" data-filter="low">
+            Low
+          </button>
+        </div>
+
         <input
           id="searchInput"
-          class="form-control form-control-sm ms-md-3 p-2"
-          placeholder="Search tasks or tags..."
+          class="form-control form-control-sm ms-md-1 p-2"
+          placeholder="Search tasks"
         />
       </div>
 

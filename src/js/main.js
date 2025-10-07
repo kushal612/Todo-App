@@ -76,13 +76,6 @@ function formatDate(dateString) {
 }
 
 async function addTask(text, importance, tags) {
-  if (typeof text !== "string") {
-    return false;
-  }
-  if (!text.trim()) {
-    return;
-  }
-
   const now = new Date().toISOString();
   const newTask = {
     title: text.trim(),
@@ -241,12 +234,120 @@ function getImportanceBadge(importance) {
   return `<span class="badge bg-${color} text-uppercase">${importance}</span>`;
 }
 
+// function renderTask() {
+//   const q = searchInput.value.toLowerCase();
+//   let visible = tasks.filter((t) => {
+//     if (currentFilter === "current" && t.done) return false;
+//     if (currentFilter === "completed" && !t.done) return false;
+
+//     if (
+//       q &&
+//       !t.text.toLowerCase().includes(q) &&
+//       !t.tags.some((tag) => tag.includes(q))
+//     )
+//       return false;
+
+//     return true;
+//   });
+
+//   visible.sort((a, b) => {
+//     const importanceOrder = { high: 3, medium: 2, low: 1 };
+//     const aImp = a.importance ? a.importance.toLowerCase() : "medium";
+//     const bImp = b.importance ? b.importance.toLowerCase() : "medium";
+//     const diff = importanceOrder[bImp] - importanceOrder[aImp];
+//     if (diff !== 0) return diff;
+//     return new Date(b.createdOn) - new Date(a.createdOn);
+//   });
+
+//   tasksList.innerHTML = "";
+//   if (visible.length === 0) {
+//     tasksList.innerHTML =
+//       '<div class="text-center text-muted py-3">No tasks found</div>';
+//     return;
+//   }
+
+//   visible.forEach((t) => {
+//     const el = document.createElement("div");
+//     el.className = `task-item task-importance-${t.importance.toLowerCase()} list-group-item d-flex align-items-start ${
+//       t.done ? "completed" : ""
+//     }`;
+//     el.innerHTML = `
+//       <div class="form-check me-3">
+//         <input type="checkbox" class="form-check-input mt-2" ${
+//           t.done ? "checked" : ""
+//         }>
+//       </div>
+//       <div class="task-content flex-grow-1">
+//         <div class="d-flex justify-content-between align-items-start">
+//           <div class="task-text ${
+//             t.done ? "text-decoration-line-through text-muted" : "fw-bold"
+//           }">${t.text}</div>
+//           <div class="btn-group btn-group-sm d-flex flex-row gap-2 flex-shrink-0">
+//             <button class="btn btn-outline-primary btn-edit" title="Edit Task"><i class="bi bi-pencil"></i></button>
+//             <button class="btn btn-outline-danger btn-delete" title="Delete Task"><i class="bi bi-trash"></i></button>
+//           </div>
+//         </div>
+//         <div class="meta-info small text-muted mt-1">
+//           <div class="d-flex align-items-center flex-wrap">
+//             <span class="me-3" title="Importance">${getImportanceBadge(
+//               t.importance
+//             )}</span>
+//             ${
+//               t.tags.length > 0
+//                 ? t.tags
+//                     .map(
+//                       (tag) =>
+//                         `<span class="badge bg-info text-dark me-1" title="Tag: ${tag}">#${tag}</span>`
+//                     )
+//                     .join("")
+//                 : ""
+//             }
+//           </div>
+//           <div class="mt-1">
+//             <span class="me-3 createdTime" title="Created On">${formatDate(
+//               t.createdOn
+//             )}</span>
+//             <br>
+//             ${
+//               t.createdOn !== t.updatedOn
+//                 ? `<span class="me-3 updatedTime" title="Updated On">Updated: ${formatDate(
+//                     t.updatedOn
+//                   )}</span>`
+//                 : ""
+//             }
+//           </div>
+//         </div>
+//       </div>
+//     `;
+//     el.querySelector("input").addEventListener("change", () =>
+//       toggleDone(t.id)
+//     );
+//     el.querySelector(".btn-edit").addEventListener("click", () =>
+//       openEditModal(t.id)
+//     );
+//     el.querySelector(".btn-delete").addEventListener("click", () => {
+//       taskIdToDelete = t.id;
+//       deleteModal.show();
+//     });
+//     tasksList.appendChild(el);
+//   });
+
+//   const remaining = tasks.filter((t) => !t.done).length;
+//   remainingCount.innerText = `${remaining} remaining`;
+// }
+
 function renderTask() {
   const q = searchInput.value.toLowerCase();
   let visible = tasks.filter((t) => {
     if (currentFilter === "current" && t.done) return false;
     if (currentFilter === "completed" && !t.done) return false;
 
+    if (
+      currentPriorityFilter !== "all" &&
+      t.importance.toLowerCase() !== currentPriorityFilter
+    ) {
+      return false;
+    }
     if (
       q &&
       !t.text.toLowerCase().includes(q) &&
@@ -258,11 +359,8 @@ function renderTask() {
   });
 
   visible.sort((a, b) => {
-    const importanceOrder = { high: 3, medium: 2, low: 1 };
-    const aImp = a.importance ? a.importance.toLowerCase() : "";
-    const bImp = b.importance ? b.importance.toLowerCase() : "";
-    const diff = importanceOrder[bImp] - importanceOrder[aImp];
-    if (diff !== 0) return diff;
+    if (a.updatedOn || b.updatedOn)
+      return new Date(b.updatedOn) - new Date(a.updatedOn);
     return new Date(b.createdOn) - new Date(a.createdOn);
   });
 
@@ -339,8 +437,8 @@ function renderTask() {
     tasksList.appendChild(el);
   });
 
-  const remaining = tasks.filter((t) => !t.done).length;
-  remainingCount.innerText = `${remaining} remaining`;
+  // const remaining = tasks.filter((t) => !t.done).length;
+  // remainingCount.innerText = `${remaining} remaining`;
 }
 
 addBtn.addEventListener("click", () => {
@@ -392,6 +490,26 @@ confirmDeleteBtn.addEventListener("click", () => {
     taskIdToDelete = null;
     deleteModal.hide();
   }
+});
+
+searchInput.addEventListener("input", async (e) => {
+  const searchTerm = e.target.value.trim();
+
+  await fetch(`${API_URL}?search=${encodeURIComponent(searchTerm)}`);
+
+  renderTask();
+});
+
+let currentPriorityFilter = "all";
+document.querySelectorAll(".priority").forEach((button) => {
+  button.addEventListener("click", (e) => {
+    currentPriorityFilter = e.target.dataset.filter;
+    renderTask();
+    document
+      .querySelectorAll(".priority")
+      .forEach((btn) => btn.classList.remove("active"));
+    e.target.classList.add("active");
+  });
 });
 
 loadTasks();
