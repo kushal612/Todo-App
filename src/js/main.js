@@ -76,7 +76,12 @@ function formatDate(dateString) {
 }
 
 async function addTask(text, importance, tags) {
-  if (!text.trim()) return;
+  if (typeof text !== "string") {
+    return false;
+  }
+  if (!text.trim()) {
+    return;
+  }
 
   const now = new Date().toISOString();
   const newTask = {
@@ -254,8 +259,8 @@ function renderTask() {
 
   visible.sort((a, b) => {
     const importanceOrder = { high: 3, medium: 2, low: 1 };
-    const aImp = a.importance ? a.importance.toLowerCase() : "medium";
-    const bImp = b.importance ? b.importance.toLowerCase() : "medium";
+    const aImp = a.importance ? a.importance.toLowerCase() : "";
+    const bImp = b.importance ? b.importance.toLowerCase() : "";
     const diff = importanceOrder[bImp] - importanceOrder[aImp];
     if (diff !== 0) return diff;
     return new Date(b.createdOn) - new Date(a.createdOn);
