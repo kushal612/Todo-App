@@ -436,9 +436,6 @@ function renderTask() {
     });
     tasksList.appendChild(el);
   });
-
-  // const remaining = tasks.filter((t) => !t.done).length;
-  // remainingCount.innerText = `${remaining} remaining`;
 }
 
 addBtn.addEventListener("click", () => {
