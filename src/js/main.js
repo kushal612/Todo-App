@@ -4,7 +4,7 @@ import "../scss/styles.scss";
 // Import all of Bootstrap’s JS
 import * as bootstrap from "bootstrap";
 
-const API_URL = "http://localhost:3000/todos";
+const API_URL = "http://localhost:3000/api/tasks";
 
 let tasks = [];
 let currentFilter = "all";
@@ -47,10 +47,10 @@ async function loadTasks() {
     const todos = await res.json();
 
     tasks = todos.map((t) => ({
-      id: t.id,
+      id: t._id,
       text: t.title,
       done: t.isCompleted,
-      importance: t.isImpotant || "Normal",
+      importance: t.isImportant || false,
       tags: Array.isArray(t.tags)
         ? t.tags
         : t.tags
@@ -59,6 +59,7 @@ async function loadTasks() {
       createdOn: t.createdAt,
       updatedOn: t.updatedAt,
     }));
+    console.log(tasks);
     renderTask();
   } catch (err) {
     console.error("Error fetching tasks:", err);
@@ -80,7 +81,7 @@ async function addTask(text, importance, tags) {
   const newTask = {
     title: text.trim(),
     isCompleted: false,
-    isImpotant: importance || "Normal",
+    isImportant: importance || "Normal",
     tags: tags
       .split(/[\s,]+/)
       .filter((tag) => tag.trim() !== "")
@@ -102,7 +103,7 @@ async function addTask(text, importance, tags) {
       id: savedTask.id,
       text: savedTask.title,
       done: savedTask.isCompleted,
-      importance: savedTask.isImpotant,
+      importance: savedTask.isImportant,
       tags: savedTask.tags
         ? savedTask.tags.split(/[\s,]+/).map((t) => t.trim().toLowerCase())
         : [],
@@ -182,7 +183,7 @@ async function saveEditedTask() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title: task.text,
-          isImpotant: task.importance,
+          isImportant: task.importance,
           tags: task.tags.join(","),
           updatedAt: task.updatedOn,
         }),
@@ -218,20 +219,10 @@ function applyFilter(flt) {
   renderTask();
 }
 
-function getImportanceBadge(importance) {
-  let color = "secondary";
-  switch (importance.toLowerCase()) {
-    case "low":
-      color = "danger";
-      break;
-    case "medium":
-      color = "warning";
-      break;
-    case "high":
-      color = "success";
-      break;
-  }
-  return `<span class="badge bg-${color} text-uppercase">${importance}</span>`;
+function getImportanceBadge(isImportant) {
+  return `<span class="badge bg-${isImportant ? "danger" : "secondary"}">${
+    isImportant ? "Important" : "Normal"
+  }</span>`;
 }
 
 // function renderTask() {
@@ -354,7 +345,6 @@ function renderTask() {
       !t.tags.some((tag) => tag.includes(q))
     )
       return false;
-
     return true;
   });
 
@@ -373,9 +363,9 @@ function renderTask() {
 
   visible.forEach((t) => {
     const el = document.createElement("div");
-    el.className = `task-item task-importance-${t.importance.toLowerCase()} list-group-item d-flex align-items-start ${
-      t.done ? "completed" : ""
-    }`;
+    el.className = `task-item task-importance-${
+      t.importance
+    } list-group-item d-flex align-items-start ${t.done ? "completed" : ""}`;
     el.innerHTML = `
       <div class="form-check me-3">
         <input type="checkbox" class="form-check-input mt-2" ${
@@ -510,3 +500,59 @@ document.querySelectorAll(".priority").forEach((button) => {
 });
 
 loadTasks();
+
+// updated
+
+// async function loadTasks() {
+//   try {
+//     const params = new URLSearchParams();
+
+//     const searchTerm = searchInput.value.trim();
+//     if (searchTerm) params.append("search", searchTerm);
+
+//     if (currentFilter !== "all") params.append("filter", currentFilter);
+
+//     if (currentPriorityFilter === "important") {
+//       params.append("isImportant", "true");
+//     } else if (currentPriorityFilter === "notImportant") {
+//       params.append("isImportant", "false");
+//     }
+
+//     const res = await fetch(`${API_URL}?${params.toString()}`);
+//     if (!res.ok)
+//       throw new Error(`Server error: ${res.status} ${res.statusText}`);
+
+//     const todos = await res.json();
+
+//     tasks = todos.map((t) => ({
+//       id: t._id,
+//       text: t.title,
+//       done: t.isCompleted,
+//       important: t.isImportant,
+//       tags: Array.isArray(t.tags)
+//         ? t.tags
+//         : t.tags
+//         ? t.tags.split(/[\s,]+/).map((tag) => tag.trim().toLowerCase())
+//         : [],
+//       createdOn: t.createdAt,
+//       updatedOn: t.updatedAt,
+//     }));
+
+//     renderTask();
+//   } catch (err) {
+//     console.error("Error fetching tasks:", err);
+//   }
+// }
+
+// //toggle done/undone
+
+// async function toggleDone(id) {
+//   try {
+//     const res = await fetch(`${API_URL}/${id}/toggle`, {
+//       method: "PATCH",
+//     });
+//     await loadTasks();
+//   } catch (err) {
+//     console.error("Error toggling task:", err);
+//   }
+// }
