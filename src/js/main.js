@@ -94,7 +94,7 @@ async function addTask(text, importance, tags) {
   try {
     const res = await fetch(API_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      //headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newTask),
     });
     const savedTask = await res.json();
