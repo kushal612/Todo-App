@@ -1,25 +1,22 @@
 // Import our custom CSS
 import "../scss/styles.scss";
 
-// Import all of Bootstrap’s JS
+// Import Bootstrap JS
 import * as bootstrap from "bootstrap";
 
 const API_URL = "http://localhost:3000/api/tasks";
 
 let tasks = [];
-let currentFilter = "all";
 
 const inputTask = document.getElementById("inputTask");
 const addBtn = document.getElementById("addBtn");
 const tasksList = document.getElementById("tasksList");
 const imp = document.getElementById("impOrder");
 const tag = document.getElementById("tagInput");
-
 const filters = document.getElementById("filters");
 const searchInput = document.getElementById("searchInput");
 const clearCompleted = document.getElementById("clearCompleted");
 const clearAll = document.getElementById("clearAll");
-const remainingCount = document.getElementById("remainingCount");
 
 const editModal = new bootstrap.Modal(document.getElementById("editModal"));
 const editTaskInput = document.getElementById("editTaskInput");
@@ -37,346 +34,160 @@ const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
 
 let taskIdToEdit = null;
 let taskIdToDelete = null;
+let currentFilter = "all";
+let currentPriorityFilter = "all";
 
 async function loadTasks() {
   try {
-    const res = await fetch(API_URL);
-    if (!res.ok)
-      throw new Error(`Server error: ${res.status} ${res.statusText}`);
+    const params = new URLSearchParams({
+      filter: currentFilter,
+      priority: currentPriorityFilter,
+      search: searchInput.value.trim(),
+    });
 
-    const todos = await res.json();
+    const res = await fetch(`${API_URL}?${params.toString()}`);
+    tasks = await res.json();
 
-    tasks = todos.map((t) => ({
-      id: t._id,
-      text: t.title,
-      done: t.isCompleted,
-      importance: t.isImportant || false,
-      tags: Array.isArray(t.tags)
-        ? t.tags
-        : t.tags
-        ? t.tags.split(/[\s,]+/).map((tag) => tag.trim().toLowerCase())
-        : [],
-      createdOn: t.createdAt,
-      updatedOn: t.updatedAt,
-    }));
-    console.log(tasks);
-    renderTask();
+    renderTasks();
   } catch (err) {
-    console.error("Error fetching tasks:", err);
+    console.error("Error loading tasks:", err);
   }
 }
 
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  const dateOptions = { month: "short", day: "numeric" };
-  const timeOptions = { hour: "2-digit", minute: "2-digit" };
-  return `${date.toLocaleDateString(
-    undefined,
-    dateOptions
-  )} at ${date.toLocaleTimeString(undefined, timeOptions)}`;
+async function addTask(text, importance, tags) {
+  if (!text.trim()) return;
+
+  const tagsArray = tags
+    ? tags
+        .split(/[\s,]+/)
+        .filter((tag) => tag.trim() !== "")
+        .map((tag) => tag.trim().toLowerCase())
+    : [];
+
+  try {
+    await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: text.trim(),
+        isImportant: importance === "important",
+        tags: tagsArray,
+      }),
+    });
+    loadTasks();
+  } catch (err) {
+    console.error("Error adding task:", err);
+  }
 }
 
-async function addTask(text, importance, tags) {
-  const now = new Date().toISOString();
-  const newTask = {
-    title: text.trim(),
-    isCompleted: false,
-    isImportant: importance || "Normal",
-    tags: tags
-      .split(/[\s,]+/)
-      .filter((tag) => tag.trim() !== "")
-      .map((tag) => tag.trim().toLowerCase())
-      .join(","),
-    createdAt: now,
-    updatedAt: now,
+async function toggleDone(id, done) {
+  try {
+    await fetch(`${API_URL}/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ isCompleted: done }),
+    });
+    loadTasks();
+  } catch (err) {
+    console.error("Error toggling task:", err);
+  }
+}
+
+async function saveEditedTask() {
+  if (!taskIdToEdit) return;
+
+  const updatedData = {
+    title: editTaskInput.value.trim(),
+    isImportant: editImportanceSelect.value === "important",
+    tags: editTagsInput.value
+      ? editTagsInput.value
+          .split(/[\s,]+/)
+          .filter((tag) => tag.trim() !== "")
+          .map((tag) => tag.trim().toLowerCase())
+      : [],
   };
 
   try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      //headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newTask),
+    await fetch(`${API_URL}/${taskIdToEdit}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedData),
     });
-    const savedTask = await res.json();
-
-    tasks.push({
-      id: savedTask.id,
-      text: savedTask.title,
-      done: savedTask.isCompleted,
-      importance: savedTask.isImportant,
-      tags: savedTask.tags
-        ? savedTask.tags.split(/[\s,]+/).map((t) => t.trim().toLowerCase())
-        : [],
-      createdOn: savedTask.createdAt,
-      updatedOn: savedTask.updatedAt,
-    });
-
-    renderTask();
+    editModal.hide();
+    taskIdToEdit = null;
+    loadTasks();
   } catch (err) {
-    console.error("Error adding task:", err);
+    console.error("Error updating task:", err);
   }
 }
 
 async function deleteTask(id) {
   try {
     await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-    tasks = tasks.filter((t) => t.id !== id);
-    renderTask();
+    loadTasks();
   } catch (err) {
     console.error("Error deleting task:", err);
   }
 }
 
-async function toggleDone(id) {
-  const t = tasks.find((x) => x.id === id);
-  if (!t) return;
-
-  t.done = !t.done;
-  t.updatedOn = new Date().toISOString();
-
-  try {
-    await fetch(`${API_URL}/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ isCompleted: t.done, updatedAt: t.updatedOn }),
-    });
-    renderTask();
-  } catch (err) {
-    console.error("Error toggling task:", err);
-  }
-}
-
-function openEditModal(id) {
-  const task = tasks.find((t) => t.id === id);
-  if (!task) return;
-
-  taskIdToEdit = id;
-  editTaskInput.value = task.text;
-  editImportanceSelect.value = task.importance;
-  editTagsInput.value = task.tags.join(", ");
-  editModal.show();
-}
-
-async function saveEditedTask() {
-  const id = taskIdToEdit;
-  if (!id) return;
-
-  const task = tasks.find((t) => t.id === id);
-  if (!task) return;
-
-  const newText = editTaskInput.value.trim();
-  const newImportance = editImportanceSelect.value;
-  const newTags = editTagsInput.value;
-
-  if (newText) {
-    task.text = newText;
-    task.importance = newImportance;
-    task.tags = newTags
-      .split(/[\s,]+/)
-      .filter((tag) => tag.trim() !== "")
-      .map((tag) => tag.trim().toLowerCase());
-    task.updatedOn = new Date().toISOString();
-
-    try {
-      await fetch(`${API_URL}/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: task.text,
-          isImportant: task.importance,
-          tags: task.tags.join(","),
-          updatedAt: task.updatedOn,
-        }),
-      });
-      renderTask();
-    } catch (err) {
-      console.error("Error updating task:", err);
-    }
-  }
-
-  editModal.hide();
-  taskIdToEdit = null;
-}
-
 async function clearCompletedTasks() {
-  const completedTasks = tasks.filter((t) => t.done);
-  for (const t of completedTasks) {
-    await deleteTask(t.id);
+  try {
+    await fetch(`${API_URL}/clear/completed`, { method: "DELETE" });
+    loadTasks();
+  } catch (err) {
+    console.error("Error clearing completed tasks:", err);
   }
 }
 
-async function clearAllTask() {
-  for (const t of tasks) {
-    await deleteTask(t.id);
+async function clearAllTasks() {
+  try {
+    await fetch(`${API_URL}/clear/all`, { method: "DELETE" });
+    loadTasks();
+  } catch (err) {
+    console.error("Error clearing all tasks:", err);
   }
 }
 
-function applyFilter(flt) {
-  currentFilter = flt;
-  Array.from(filters.querySelectorAll("button")).forEach((b) =>
-    b.classList.toggle("active", b.dataset.filter === flt)
-  );
-  renderTask();
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  })}`;
 }
 
 function getImportanceBadge(isImportant) {
   return `<span class="badge bg-${isImportant ? "danger" : "secondary"}">${
-    isImportant ? "Important" : "Normal"
+    isImportant ? "important" : "normal"
   }</span>`;
 }
 
-// function renderTask() {
-//   const q = searchInput.value.toLowerCase();
-//   let visible = tasks.filter((t) => {
-//     if (currentFilter === "current" && t.done) return false;
-//     if (currentFilter === "completed" && !t.done) return false;
-
-//     if (
-//       q &&
-//       !t.text.toLowerCase().includes(q) &&
-//       !t.tags.some((tag) => tag.includes(q))
-//     )
-//       return false;
-
-//     return true;
-//   });
-
-//   visible.sort((a, b) => {
-//     const importanceOrder = { high: 3, medium: 2, low: 1 };
-//     const aImp = a.importance ? a.importance.toLowerCase() : "medium";
-//     const bImp = b.importance ? b.importance.toLowerCase() : "medium";
-//     const diff = importanceOrder[bImp] - importanceOrder[aImp];
-//     if (diff !== 0) return diff;
-//     return new Date(b.createdOn) - new Date(a.createdOn);
-//   });
-
-//   tasksList.innerHTML = "";
-//   if (visible.length === 0) {
-//     tasksList.innerHTML =
-//       '<div class="text-center text-muted py-3">No tasks found</div>';
-//     return;
-//   }
-
-//   visible.forEach((t) => {
-//     const el = document.createElement("div");
-//     el.className = `task-item task-importance-${t.importance.toLowerCase()} list-group-item d-flex align-items-start ${
-//       t.done ? "completed" : ""
-//     }`;
-//     el.innerHTML = `
-//       <div class="form-check me-3">
-//         <input type="checkbox" class="form-check-input mt-2" ${
-//           t.done ? "checked" : ""
-//         }>
-//       </div>
-//       <div class="task-content flex-grow-1">
-//         <div class="d-flex justify-content-between align-items-start">
-//           <div class="task-text ${
-//             t.done ? "text-decoration-line-through text-muted" : "fw-bold"
-//           }">${t.text}</div>
-//           <div class="btn-group btn-group-sm d-flex flex-row gap-2 flex-shrink-0">
-//             <button class="btn btn-outline-primary btn-edit" title="Edit Task"><i class="bi bi-pencil"></i></button>
-//             <button class="btn btn-outline-danger btn-delete" title="Delete Task"><i class="bi bi-trash"></i></button>
-//           </div>
-//         </div>
-//         <div class="meta-info small text-muted mt-1">
-//           <div class="d-flex align-items-center flex-wrap">
-//             <span class="me-3" title="Importance">${getImportanceBadge(
-//               t.importance
-//             )}</span>
-//             ${
-//               t.tags.length > 0
-//                 ? t.tags
-//                     .map(
-//                       (tag) =>
-//                         `<span class="badge bg-info text-dark me-1" title="Tag: ${tag}">#${tag}</span>`
-//                     )
-//                     .join("")
-//                 : ""
-//             }
-//           </div>
-//           <div class="mt-1">
-//             <span class="me-3 createdTime" title="Created On">${formatDate(
-//               t.createdOn
-//             )}</span>
-//             <br>
-//             ${
-//               t.createdOn !== t.updatedOn
-//                 ? `<span class="me-3 updatedTime" title="Updated On">Updated: ${formatDate(
-//                     t.updatedOn
-//                   )}</span>`
-//                 : ""
-//             }
-//           </div>
-//         </div>
-//       </div>
-//     `;
-//     el.querySelector("input").addEventListener("change", () =>
-//       toggleDone(t.id)
-//     );
-//     el.querySelector(".btn-edit").addEventListener("click", () =>
-//       openEditModal(t.id)
-//     );
-//     el.querySelector(".btn-delete").addEventListener("click", () => {
-//       taskIdToDelete = t.id;
-//       deleteModal.show();
-//     });
-//     tasksList.appendChild(el);
-//   });
-
-//   const remaining = tasks.filter((t) => !t.done).length;
-//   remainingCount.innerText = `${remaining} remaining`;
-// }
-
-function renderTask() {
-  const q = searchInput.value.toLowerCase();
-  let visible = tasks.filter((t) => {
-    if (currentFilter === "current" && t.done) return false;
-    if (currentFilter === "completed" && !t.done) return false;
-
-    if (
-      currentPriorityFilter !== "all" &&
-      t.importance.toLowerCase() !== currentPriorityFilter
-    ) {
-      return false;
-    }
-    if (
-      q &&
-      !t.text.toLowerCase().includes(q) &&
-      !t.tags.some((tag) => tag.includes(q))
-    )
-      return false;
-    return true;
-  });
-
-  visible.sort((a, b) => {
-    if (a.updatedOn || b.updatedOn)
-      return new Date(b.updatedOn) - new Date(a.updatedOn);
-    return new Date(b.createdOn) - new Date(a.createdOn);
-  });
-
+function renderTasks() {
   tasksList.innerHTML = "";
-  if (visible.length === 0) {
+  if (!tasks.length) {
     tasksList.innerHTML =
       '<div class="text-center text-muted py-3">No tasks found</div>';
     return;
   }
 
-  visible.forEach((t) => {
+  tasks.forEach((t) => {
     const el = document.createElement("div");
-    el.className = `task-item task-importance-${
-      t.importance
-    } list-group-item d-flex align-items-start ${t.done ? "completed" : ""}`;
+    el.className = `task-item list-group-item d-flex align-items-start ${
+      t.isCompleted ? "completed" : ""
+    }`;
     el.innerHTML = `
       <div class="form-check me-3">
         <input type="checkbox" class="form-check-input mt-2" ${
-          t.done ? "checked" : ""
+          t.isCompleted ? "checked" : ""
         }>
       </div>
       <div class="task-content flex-grow-1">
         <div class="d-flex justify-content-between align-items-start">
           <div class="task-text ${
-            t.done ? "text-decoration-line-through text-muted" : "fw-bold"
-          }">${t.text}</div>
+            t.isCompleted
+              ? "text-decoration-line-through text-muted"
+              : "fw-bold"
+          }">${t.title}</div>
           <div class="btn-group btn-group-sm d-flex flex-row gap-2 flex-shrink-0">
             <button class="btn btn-outline-primary btn-edit" title="Edit Task"><i class="bi bi-pencil"></i></button>
             <button class="btn btn-outline-danger btn-delete" title="Delete Task"><i class="bi bi-trash"></i></button>
@@ -384,29 +195,24 @@ function renderTask() {
         </div>
         <div class="meta-info small text-muted mt-1">
           <div class="d-flex align-items-center flex-wrap">
-            <span class="me-3" title="Importance">${getImportanceBadge(
-              t.importance
-            )}</span>
+            <span class="me-3">${getImportanceBadge(t.isImportant)}</span>
             ${
-              t.tags.length > 0
+              t.tags?.length
                 ? t.tags
                     .map(
                       (tag) =>
-                        `<span class="badge bg-info text-dark me-1" title="Tag: ${tag}">#${tag}</span>`
+                        `<span class="badge bg-info text-dark me-1">#${tag}</span>`
                     )
                     .join("")
                 : ""
             }
           </div>
           <div class="mt-1">
-            <span class="me-3 createdTime" title="Created On">${formatDate(
-              t.createdOn
-            )}</span>
-            <br>
+            <span class="me-3">Created: ${formatDate(t.createdAt)}</span><br>
             ${
-              t.createdOn !== t.updatedOn
-                ? `<span class="me-3 updatedTime" title="Updated On">Updated: ${formatDate(
-                    t.updatedOn
+              t.createdAt !== t.updatedAt
+                ? `<span class="me-3">Updated: ${formatDate(
+                    t.updatedAt
                   )}</span>`
                 : ""
             }
@@ -414,16 +220,22 @@ function renderTask() {
         </div>
       </div>
     `;
-    el.querySelector("input").addEventListener("change", () =>
-      toggleDone(t.id)
+
+    el.querySelector("input").addEventListener("change", (e) =>
+      toggleDone(t._id, e.target.checked)
     );
-    el.querySelector(".btn-edit").addEventListener("click", () =>
-      openEditModal(t.id)
-    );
+    el.querySelector(".btn-edit").addEventListener("click", () => {
+      taskIdToEdit = t._id;
+      editTaskInput.value = t.title;
+      editImportanceSelect.value = t.isImportant ? "important" : "normal";
+      editTagsInput.value = t.tags?.join(", ") || "";
+      editModal.show();
+    });
     el.querySelector(".btn-delete").addEventListener("click", () => {
-      taskIdToDelete = t.id;
+      taskIdToDelete = t._id;
       deleteModal.show();
     });
+
     tasksList.appendChild(el);
   });
 }
@@ -435,41 +247,48 @@ addBtn.addEventListener("click", () => {
 });
 
 inputTask.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    addTask(inputTask.value, imp.value, tag.value);
-    inputTask.value = "";
-    tag.value = "";
-  }
+  if (e.key === "Enter") addBtn.click();
 });
 tag.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    addTask(inputTask.value, imp.value, tag.value);
-    inputTask.value = "";
-    tag.value = "";
-  }
+  if (e.key === "Enter") addBtn.click();
 });
 imp.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    addTask(inputTask.value, imp.value, tag.value);
-    inputTask.value = "";
-    tag.value = "";
-  }
+  if (e.key === "Enter") addBtn.click();
 });
 
 filters.addEventListener("click", (e) => {
-  if (e.target.closest("button"))
-    applyFilter(e.target.closest("button").dataset.filter);
+  if (e.target.closest("button")) {
+    currentFilter = e.target.closest("button").dataset.filter;
+    document
+      .querySelectorAll("#filters button")
+      .forEach((btn) =>
+        btn.classList.toggle("active", btn.dataset.filter === currentFilter)
+      );
+    loadTasks();
+    renderTasks();
+  }
 });
 
-searchInput.addEventListener("input", renderTask);
+searchInput.addEventListener("input", loadTasks);
+
+document.querySelectorAll(".priority").forEach((button) => {
+  button.addEventListener("click", (e) => {
+    currentPriorityFilter = e.target.dataset.filter;
+    document
+      .querySelectorAll(".priority")
+      .forEach((btn) => btn.classList.remove("active"));
+    e.target.classList.add("active");
+    loadTasks();
+  });
+});
+
 clearCompleted.addEventListener("click", clearCompletedTasks);
 
 clearAll.addEventListener("click", () => clearAllModal.show());
 confirmClearAllBtn.addEventListener("click", () => {
-  clearAllTask();
+  clearAllTasks();
   clearAllModal.hide();
 });
-
 saveEditBtn.addEventListener("click", saveEditedTask);
 confirmDeleteBtn.addEventListener("click", () => {
   if (taskIdToDelete) {
@@ -477,82 +296,8 @@ confirmDeleteBtn.addEventListener("click", () => {
     taskIdToDelete = null;
     deleteModal.hide();
   }
+  loadTasks();
 });
 
-searchInput.addEventListener("input", async (e) => {
-  const searchTerm = e.target.value.trim();
-
-  await fetch(`${API_URL}?search=${encodeURIComponent(searchTerm)}`);
-
-  renderTask();
-});
-
-let currentPriorityFilter = "all";
-document.querySelectorAll(".priority").forEach((button) => {
-  button.addEventListener("click", (e) => {
-    currentPriorityFilter = e.target.dataset.filter;
-    renderTask();
-    document
-      .querySelectorAll(".priority")
-      .forEach((btn) => btn.classList.remove("active"));
-    e.target.classList.add("active");
-  });
-});
-
+renderTasks();
 loadTasks();
-
-// updated
-
-// async function loadTasks() {
-//   try {
-//     const params = new URLSearchParams();
-
-//     const searchTerm = searchInput.value.trim();
-//     if (searchTerm) params.append("search", searchTerm);
-
-//     if (currentFilter !== "all") params.append("filter", currentFilter);
-
-//     if (currentPriorityFilter === "important") {
-//       params.append("isImportant", "true");
-//     } else if (currentPriorityFilter === "notImportant") {
-//       params.append("isImportant", "false");
-//     }
-
-//     const res = await fetch(`${API_URL}?${params.toString()}`);
-//     if (!res.ok)
-//       throw new Error(`Server error: ${res.status} ${res.statusText}`);
-
-//     const todos = await res.json();
-
-//     tasks = todos.map((t) => ({
-//       id: t._id,
-//       text: t.title,
-//       done: t.isCompleted,
-//       important: t.isImportant,
-//       tags: Array.isArray(t.tags)
-//         ? t.tags
-//         : t.tags
-//         ? t.tags.split(/[\s,]+/).map((tag) => tag.trim().toLowerCase())
-//         : [],
-//       createdOn: t.createdAt,
-//       updatedOn: t.updatedAt,
-//     }));
-
-//     renderTask();
-//   } catch (err) {
-//     console.error("Error fetching tasks:", err);
-//   }
-// }
-
-// //toggle done/undone
-
-// async function toggleDone(id) {
-//   try {
-//     const res = await fetch(`${API_URL}/${id}/toggle`, {
-//       method: "PATCH",
-//     });
-//     await loadTasks();
-//   } catch (err) {
-//     console.error("Error toggling task:", err);
-//   }
-// }

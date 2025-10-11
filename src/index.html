@@ -40,9 +40,8 @@
           class="col-md-6 col-12 p-2"
         />
         <select class="form-select-default col-12 col-md-5 p-2" id="impOrder">
-          <option value="high">High</option>
-          <option value="medium">Medium</option>
-          <option value="low">Low</option>
+          <option value="important">Important</option>
+          <option value="normal">Normal</option>
         </select>
       </div>
       <div
@@ -57,7 +56,7 @@
           </button>
           <button
             class="btn btn-sm btn-outline-secondary p-2 text-black"
-            data-filter="current"
+            data-filter="pending"
           >
             Pending
           </button>
@@ -76,14 +75,14 @@
           >
             All
           </button>
-          <button class="btn btn-outline-success priority" data-filter="high">
-            High
+          <button
+            class="btn btn-outline-success priority"
+            data-filter="important"
+          >
+            Important
           </button>
-          <button class="btn btn-outline-warning priority" data-filter="medium">
-            Medium
-          </button>
-          <button class="btn btn-outline-danger priority" data-filter="low">
-            Low
+          <button class="btn btn-outline-warning priority" data-filter="normal">
+            Normal
           </button>
         </div>
 
@@ -141,9 +140,8 @@
                 >Importance</label
               >
               <select class="form-select" id="editImportanceSelect">
-                <option value="high">High</option>
-                <option value="medium">Medium</option>
-                <option value="low">Low</option>
+                <option value="important">Important</option>
+                <option value="normal">normal</option>
               </select>
             </div>
             <div class="mb-3">
