@@ -299,7 +299,6 @@ confirmDeleteBtn.addEventListener("click", () => {
   loadTasks();
 });
 
-renderTasks();
 loadTasks();
 
 // // Import Custom CSS
