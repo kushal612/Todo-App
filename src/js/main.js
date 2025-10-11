@@ -1,7 +1,7 @@
 // Import our custom CSS
 import "../scss/styles.scss";
 
-// Import Bootstrap JS
+//Import Bootstrap JS
 import * as bootstrap from "bootstrap";
 
 const API_URL = "http://localhost:3000/api/tasks";
@@ -9,8 +9,8 @@ const API_URL = "http://localhost:3000/api/tasks";
 let tasks = [];
 
 const inputTask = document.getElementById("inputTask");
-const addBtn = document.getElementById("addBtn");
 const tasksList = document.getElementById("tasksList");
+const addBtn = document.getElementById("addBtn");
 const imp = document.getElementById("impOrder");
 const tag = document.getElementById("tagInput");
 const filters = document.getElementById("filters");
@@ -80,20 +80,7 @@ async function addTask(text, importance, tags) {
   }
 }
 
-async function toggleDone(id, done) {
-  try {
-    await fetch(`${API_URL}/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ isCompleted: done }),
-    });
-    loadTasks();
-  } catch (err) {
-    console.error("Error toggling task:", err);
-  }
-}
-
-async function saveEditedTask() {
+export async function saveEditedTask() {
   if (!taskIdToEdit) return;
 
   const updatedData = {
@@ -121,7 +108,7 @@ async function saveEditedTask() {
   }
 }
 
-async function deleteTask(id) {
+export async function deleteTask(id) {
   try {
     await fetch(`${API_URL}/${id}`, { method: "DELETE" });
     loadTasks();
@@ -130,7 +117,7 @@ async function deleteTask(id) {
   }
 }
 
-async function clearCompletedTasks() {
+export async function clearCompletedTasks() {
   try {
     await fetch(`${API_URL}/clear/completed`, { method: "DELETE" });
     loadTasks();
@@ -139,12 +126,25 @@ async function clearCompletedTasks() {
   }
 }
 
-async function clearAllTasks() {
+export async function clearAllTasks() {
   try {
     await fetch(`${API_URL}/clear/all`, { method: "DELETE" });
     loadTasks();
   } catch (err) {
     console.error("Error clearing all tasks:", err);
+  }
+}
+
+async function toggleDone(id, done) {
+  try {
+    await fetch(`${API_URL}/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ isCompleted: done }),
+    });
+    loadTasks();
+  } catch (err) {
+    console.error("Error toggling task:", err);
   }
 }
 
@@ -301,3 +301,29 @@ confirmDeleteBtn.addEventListener("click", () => {
 
 renderTasks();
 loadTasks();
+
+// // Import Custom CSS
+// import "../scss/styles.scss";
+
+// // Import Bootstrap JS
+// //import * as bootstrap from "bootstrap";
+
+// import { getTasks } from "./api.js";
+// import { renderTasks, currentFilter, currentPriorityFilter } from "./dom.js";
+// import "./events.js";
+// import "./modal.js";
+
+// export async function loadTasks() {
+//   try {
+//     const tasks = await getTasks({
+//       filter: currentFilter,
+//       priority: currentPriorityFilter,
+//       search: document.getElementById("searchInput").value.trim(),
+//     });
+//     renderTasks(tasks);
+//   } catch (err) {
+//     console.error("Error loading tasks:", err);
+//   }
+// }
+
+// loadTasks();
