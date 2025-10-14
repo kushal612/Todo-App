@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000/api/tasks";
+const API_URL = "http://localhost:3000/todos/tasks";
 
 export async function getTasks({ filter, priority, search }) {
   const params = new URLSearchParams({ filter, priority, search });
