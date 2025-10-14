@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sign Up</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <div class="login-container">
+      <h2>Verify OTP</h2>
+      <p>We've sent a 6-digit code to your email. Please enter it below.</p>
+
+      <p id="otpTimer"></p>
+
+      <label for="otp">Enter OTP</label>
+      <input type="text" id="otp" name="otp" required maxlength="6" />
+
+      <button type="button" id="verifyOtpButton">
+        Verify & Complete Signup
+      </button>
+
+      <button type="button" id="resendOtpButton" disabled>Resend OTP</button>
+
+      <script src="./js/page/otpVerify.js"></script>
+    </div>
+  </body>
+</html>
