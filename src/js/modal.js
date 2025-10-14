@@ -1,54 +1,28 @@
-// import * as bootstrap from "bootstrap";
-// import { updateTask, deleteTaskById } from "./api.js";
-// import { loadTasks } from "./main.js";
+import * as bootstrap from "bootstrap";
 
-// const editModal = new bootstrap.Modal(document.getElementById("editModal"));
-// const editTaskInput = document.getElementById("editTaskInput");
-// const editImportanceSelect = document.getElementById("editImportanceSelect");
-// const editTagsInput = document.getElementById("editTagsInput");
-// const saveEditBtn = document.getElementById("saveEditBtn");
+export const editModal = new bootstrap.Modal(
+  document.getElementById("editModal")
+);
+export const clearAllModal = new bootstrap.Modal(
+  document.getElementById("clearAllModal")
+);
+export const deleteModal = new bootstrap.Modal(
+  document.getElementById("deleteModal")
+);
 
-// const deleteModal = new bootstrap.Modal(document.getElementById("deleteModal"));
-// const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+export function showEditModal(task) {
+  const editTaskInput = document.getElementById("editTaskInput");
+  const editImportanceSelect = document.getElementById("editImportanceSelect");
+  const editTagsInput = document.getElementById("editTagsInput");
 
-// let taskIdToEdit = null;
-// let taskIdToDelete = null;
+  editTaskInput.value = task.title;
+  editImportanceSelect.value = task.isImportant ? "high" : "normal";
+  editTagsInput.value = task.tags?.join(", ") || "";
 
-// export function openEditModal(task) {
-//   taskIdToEdit = task._id;
-//   editTaskInput.value = task.title;
-//   editImportanceSelect.value = task.isImportant ? "important" : "normal";
-//   editTagsInput.value = task.tags?.join(", ") || "";
-//   editModal.show();
-// }
+  editModal.show();
+}
 
-// saveEditBtn.addEventListener("click", async () => {
-//   if (!taskIdToEdit) return;
-//   const updatedData = {
-//     title: editTaskInput.value.trim(),
-//     isImportant: editImportanceSelect.value === "important",
-//     tags: editTagsInput.value
-//       .split(/[\s,]+/)
-//       .filter((tag) => tag.trim() !== "")
-//       .map((tag) => tag.trim().toLowerCase()),
-//   };
-
-//   await updateTask(taskIdToEdit, updatedData);
-//   editModal.hide();
-//   taskIdToEdit = null;
-//   loadTasks();
-// });
-
-// export function openDeleteModal(id) {
-//   taskIdToDelete = id;
-//   deleteModal.show();
-// }
-
-// confirmDeleteBtn.addEventListener("click", async () => {
-//   if (taskIdToDelete) {
-//     await deleteTaskById(taskIdToDelete);
-//     taskIdToDelete = null;
-//     deleteModal.hide();
-//     loadTasks();
-//   }
-// });
+export function showDeleteModal(id) {
+  window.taskIdToDelete = id;
+  deleteModal.show();
+}
