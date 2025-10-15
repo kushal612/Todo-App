@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:3000";
+const API_BASE_URL = "http://localhost:3000/api";
 
 export const authAPI = {
   async register(email, password) {
@@ -57,7 +57,7 @@ export const authAPI = {
 
   async verifyOTP(email, otp) {
     try {
-      const response = await fetch(`${API_BASE_URL}/otp/verifyOTP`, {
+      const response = await fetch(`${API_BASE_URL}/auth/verifyOTP`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -89,7 +89,7 @@ export const authAPI = {
 
   async resendOTP(email) {
     try {
-      const response = await fetch(`${API_BASE_URL}/otp/send-otp`, {
+      const response = await fetch(`${API_BASE_URL}/auth/send-otp`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -111,7 +111,7 @@ export const authAPI = {
 
   logout() {
     TokenManager.clearTokens();
-    window.location.href = "./pages/loginPage.html";
+    window.location.href = "./pages/login.html";
   },
 
   isAuthenticated() {
@@ -131,7 +131,7 @@ export const authAPI = {
       }
 
       const response = await fetch(
-        `${APIInterceptor.API_BASE_URL}/auth/refresh`,
+        `${APIInterceptor.API_BASE_URL}/auth/refresh-token`,
         {
           method: "POST",
           headers: {

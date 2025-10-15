@@ -4,7 +4,7 @@
 // Import all of Bootstrap's JS
 //import * as bootstrap from "bootstrap";
 
-import { authAPI } from "./api.js";
+import { authAPI } from "./authApi.js";
 
 const signupForm = document.getElementById("signup-form");
 const emailInput = document.getElementById("email");
