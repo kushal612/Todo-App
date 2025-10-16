@@ -1,16 +1,17 @@
 // Import our custom CSS
-//import "../scss/login.scss";
+import "../scss/login.scss";
 
 // Import all of Bootstrap’s JS
-//import * as bootstrap from "bootstrap";
+import * as bootstrap from "bootstrap";
 
-import { authAPI } from "./authApi.js";
+import authApi from "./authApi.js";
 
 const loginForm = document.querySelector("form");
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
+const emailInput = document.getElementById("email-input");
+const passwordInput = document.getElementById("password-input");
 const submitButton = document.querySelector('button[type="submit"]');
 
+const authAPI = new authApi();
 async function handleLogin(event) {
   event.preventDefault();
 
@@ -37,8 +38,8 @@ async function handleLogin(event) {
     showSuccess("Login successful! Redirecting...");
 
     setTimeout(() => {
-      window.location.href = "../index.html";
-    }, 1500);
+      window.location.href = "../../index.html";
+    }, 1000);
   } catch (error) {
     showError(error.message || "Login failed. Please check your credentials.");
   } finally {

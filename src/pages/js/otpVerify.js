@@ -1,10 +1,12 @@
 // Import our custom CSS
-//import "../scss/login.scss";
-//import "../scss/otp.scss";
+import "../scss/login.scss";
+import "../scss/otp.scss";
 
 // Import all of Bootstrap’s JS
-//import * as bootstrap from "bootstrap";
-import { authAPI } from "./authApi.js";
+import * as bootstrap from "bootstrap";
+import authApi from "./authApi.js";
+
+const authAPI = new authApi();
 
 function OTPInput() {
   const inputs = document.querySelectorAll("#otp > *[id]");
@@ -65,8 +67,8 @@ async function handleOTPVerification() {
     document.querySelector(".card").appendChild(successMessage);
 
     setTimeout(() => {
-      window.location.href = "../index.html";
-    }, 1500);
+      window.location.href = "../../index.html";
+    }, 1000);
   } catch (error) {
     alert(error.message || "OTP verification failed. Please try again.");
   } finally {
@@ -94,7 +96,7 @@ async function handleResendOTP() {
   } catch (error) {
     alert(error.message || "Failed to resend OTP. Please try again.");
   } finally {
-    resendLink.textContent = originalText;
+    // resendLink.textContent = originalText;
     resendLink.style.pointerEvents = "auto";
   }
 }

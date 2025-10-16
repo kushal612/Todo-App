@@ -1,16 +1,17 @@
 // Import our custom CSS
-//import "../scss/login.scss";
+import "../scss/login.scss";
 
 // Import all of Bootstrap's JS
-//import * as bootstrap from "bootstrap";
+import * as bootstrap from "bootstrap";
 
-import { authAPI } from "./authApi.js";
+import authApi from "./authApi.js";
 
 const signupForm = document.getElementById("signup-form");
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 const submitButton = document.getElementById("submit-btn");
 
+const authAPI = new authApi();
 async function handleSignup(event) {
   console.log("Form submission started");
   event.preventDefault();
