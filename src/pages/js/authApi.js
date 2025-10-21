@@ -73,7 +73,7 @@ export default class authApi {
 
   async logout() {
     localStorage.clear();
-    window.location.href = "./pages/loginPage.html";
+    window.location.href = "./pages/login.html";
   }
 
   // isAuthenticated() {

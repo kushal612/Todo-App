@@ -21,6 +21,8 @@
       crossorigin="anonymous"
     />
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
@@ -29,6 +31,34 @@
   </head>
 
   <body>
+    <div id="profile-container" class="position-absolute top-0 start-0 p-3">
+      <div class="dropdown">
+        <button
+          class="btn btn-secondary dropdown-toggle d-flex align-items-center"
+          type="button"
+          id="profileDropdown"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <i class="bi bi-person-circle me-2"></i>
+          <span id="user-email">User</span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+          <li>
+            <a class="dropdown-item" href="./pages/resetPassword.html"
+              >Set New Password</a
+            >
+          </li>
+          <li><hr class="dropdown-divider" /></li>
+          <li>
+            <a class="dropdown-item text-danger" href="#" id="logout-btn"
+              >Logout</a
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+
     <div class="todo-container container">
       <h1 class="mb-3 text-center">
         <img
@@ -272,5 +302,6 @@
     </div>
 
     <script type="module" src="./js/main.js"></script>
+    <script type="module" src="./js/profile.js"></script>
   </body>
 </html>

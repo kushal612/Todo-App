@@ -41,7 +41,14 @@ export default class todoApi {
           try {
             const response = await axios.post(
               "http://localhost:3000/api/auth/protected/refresh-token",
-              { refresh_token: localStorage.getItem("refresh_token") }
+              {},
+              {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem(
+                    "refresh_token"
+                  )}`,
+                },
+              }
             );
             console.log(response);
 
@@ -60,11 +67,7 @@ export default class todoApi {
           } catch (refreshError) {
             console.log(refreshError);
 
-            if (
-              refreshError.response &&
-              (refreshError.response.status === 401 ||
-                refreshError.response.status === 403)
-            ) {
+            if (refreshError.response && refreshError.response.status === 401) {
               localStorage.removeItem("access_token");
               localStorage.removeItem("refresh_token");
 
