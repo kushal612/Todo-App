@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:3000/api/todos/tasks";
+const API_URL = "http://localhost:3000/api/todos/";
 
 export default class todoApi {
   api = axios.create({
@@ -33,14 +33,14 @@ export default class todoApi {
 
         if (
           error.response &&
-          error.response.data.message === "jwt expired" &&
+          error.response.status === 401 &&
           !originalRequest._retry
         ) {
           originalRequest._retry = true;
 
           try {
             const response = await axios.post(
-              "http://localhost:3001/api/auth/protected/refresh-token",
+              "http://localhost:3000/api/auth/protected/refresh-token",
               { refresh_token: localStorage.getItem("refresh_token") }
             );
             console.log(response);
@@ -59,11 +59,29 @@ export default class todoApi {
             }
           } catch (refreshError) {
             console.log(refreshError);
-            localStorage.removeItem("access_token");
-            localStorage.removeItem("refresh_token");
 
-            window.location.reload();
+            if (
+              refreshError.response &&
+              (refreshError.response.status === 401 ||
+                refreshError.response.status === 403)
+            ) {
+              localStorage.removeItem("access_token");
+              localStorage.removeItem("refresh_token");
+
+              alert("Session expired. Please log in again.");
+
+              window.location.href = "../pages/login.html";
+            }
           }
+        }
+
+        if (error.response && error.response.status === 403) {
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("refresh_token");
+
+          alert("Invalid session. Please log in again.");
+
+          window.location.href = "../pages/login.html";
         }
 
         return Promise.reject(error);
@@ -103,7 +121,7 @@ export default class todoApi {
   }
 
   async clearCompletedTasks() {
-    await this.api.delete("/clear/completed");
+    await this.api.delete(`/clear/completed`);
   }
 
   async clearAllTasks() {

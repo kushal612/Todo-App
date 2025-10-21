@@ -17,18 +17,15 @@ async function handleLogin(event) {
 
   const email = emailInput.value.trim();
   const password = passwordInput.value;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  // if (!email || !password) {
-  //   showError('Please fill in all fields');
-  //   return;
-  // }
-  // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  // if (!emailRegex.test(email)) {
-  //   showError('Please enter a valid email address');
-  //   return;
-  // }
+  if (!emailRegex.test(email)) {
+    showError("Please enter a valid email address");
+    return;
+  }
 
   const originalText = submitButton.textContent;
+
   submitButton.textContent = "Signing in...";
   submitButton.disabled = true;
 

@@ -10,31 +10,19 @@ const signupForm = document.getElementById("signup-form");
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 const submitButton = document.getElementById("submit-btn");
-
 const authAPI = new authApi();
+
 async function handleSignup(event) {
-  console.log("Form submission started");
   event.preventDefault();
 
   const email = emailInput.value.trim();
   const password = passwordInput.value;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  // if (!email || !password) {
-  //   console.log('Validation failed: Missing fields');
-  //   showError('Please fill in all fields');
-  //   return;
-  // }
-
-  // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  // if (!emailRegex.test(email)) {
-  //   showError('Please enter a valid email address');
-  //   return;
-  // }
-
-  // if (password.length < 6) {
-  //   showError('Password must be at least 6 characters long');
-  //   return;
-  // }
+  if (!emailRegex.test(email)) {
+    showError("Please enter a valid email address");
+    return;
+  }
 
   const originalText = submitButton.textContent;
   submitButton.textContent = "Signing up...";
@@ -50,7 +38,7 @@ async function handleSignup(event) {
 
     setTimeout(() => {
       window.location.href = "./otpVerify.html";
-    }, 1500);
+    }, 1000);
   } catch (error) {
     console.error("Registration error:", error);
 
@@ -93,9 +81,11 @@ function showSuccess(message) {
 
 function showError(message) {
   const existingError = document.querySelector(".error-message");
+
   if (existingError) {
     existingError.remove();
   }
+
   const errorDiv = document.createElement("div");
   errorDiv.className = "alert alert-danger error-message mt-3";
   errorDiv.textContent = message;
