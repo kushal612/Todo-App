@@ -26,7 +26,6 @@ export function getCurrentPriorityFilter() {
 export function getTaskIdToEdit() {
   return taskIdToEdit;
 }
-
 export function setCurrentFilter(value) {
   currentFilter = value;
 }

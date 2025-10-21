@@ -6,6 +6,7 @@ const passwordInput = document.getElementById("newPassword");
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
+
   const email = localStorage.getItem("reset_email");
   const newPassword = passwordInput.value.trim();
 

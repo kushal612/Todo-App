@@ -101,6 +101,7 @@ async function handleLogin(event) {
   }
 
   const originalText = submitButton.textContent;
+
   submitButton.textContent = "Signing in...";
   submitButton.disabled = true;
 
@@ -108,6 +109,7 @@ async function handleLogin(event) {
     await authApi.login(email, password);
 
     const userData = { email };
+
     localStorage.setItem("user", JSON.stringify(userData));
 
     showSuccess("Login successful! Redirecting...");
@@ -129,9 +131,13 @@ if (loginForm) {
 
 function showError(message) {
   const existingError = document.querySelector(".error-message");
-  if (existingError) existingError.remove();
+
+  if (existingError) {
+    existingError.remove();
+  }
 
   const errorDiv = document.createElement("div");
+
   errorDiv.className = "alert alert-danger error-message mt-3";
   errorDiv.textContent = message;
   loginForm.parentNode.insertBefore(errorDiv, loginForm.nextSibling);
@@ -141,9 +147,13 @@ function showSuccess(message) {
   const existingMessage = document.querySelector(
     ".error-message, .success-message"
   );
-  if (existingMessage) existingMessage.remove();
+
+  if (existingMessage) {
+    existingMessage.remove();
+  }
 
   const successDiv = document.createElement("div");
+
   successDiv.className = "alert alert-success success-message mt-3";
   successDiv.textContent = message;
   loginForm.parentNode.insertBefore(successDiv, loginForm.nextSibling);

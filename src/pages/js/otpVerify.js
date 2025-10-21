@@ -30,7 +30,11 @@ function OTPInput() {
           event.preventDefault();
         } else if (event.keyCode > 64 && event.keyCode < 91) {
           inputs[i].value = String.fromCharCode(event.keyCode);
-          if (i !== inputs.length - 1) inputs[i + 1].focus();
+
+          if (i !== inputs.length - 1) {
+            inputs[i + 1].focus();
+          }
+
           event.preventDefault();
         }
       }
@@ -93,28 +97,25 @@ async function handleResendOTP() {
     return;
   }
 
-  // const resendLink = document.querySelector('.text-decoration-none .ms-3');
-  // const originalText = resendLink.textContent;
-  // resendLink.textContent = 'Sending...';
-  // resendLink.style.pointerEvents = 'none';
-
   try {
     await authApi.resendOTP(email);
+
     alert("OTP has been resent to your email.");
   } catch (error) {
     alert(error.message || "Failed to resend OTP. Please try again.");
   } finally {
-    // resendLink.textContent = originalText;
     resendLink.style.pointerEvents = "auto";
   }
 }
 
 const validateButton = document.querySelector(".validate");
+
 if (validateButton) {
   validateButton.addEventListener("click", handleOTPVerification);
 }
 
 const resendLink = document.querySelector(".resend-link");
+
 if (resendLink) {
   resendLink.addEventListener("click", (e) => {
     e.preventDefault();

@@ -25,6 +25,7 @@ async function handleSignup(event) {
   }
 
   const originalText = submitButton.textContent;
+
   submitButton.textContent = "Signing up...";
   submitButton.disabled = true;
 
@@ -68,6 +69,7 @@ function showSuccess(message) {
   const existingMessage = document.querySelector(
     ".error-message, .success-message"
   );
+
   if (existingMessage) {
     existingMessage.remove();
   }

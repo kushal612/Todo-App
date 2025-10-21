@@ -87,16 +87,6 @@ export default class AuthApi {
     window.location.href = "./pages/login.html";
   }
 
-  // isAuthenticated() {
-  //   return TokenManager.isAuthenticated();
-  // }
-
-  // getToken() {
-  //   return TokenManager.getAccessToken();
-  // }
-
-  // Add refresh token endpoint
-
   async refreshToken() {
     try {
       const response = await this.api.post(`/protected/refresh-token`);

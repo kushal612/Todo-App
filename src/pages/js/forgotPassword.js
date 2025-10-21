@@ -48,6 +48,7 @@ if (forgotPassForm) {
 
 function showError(message) {
   const errorDiv = document.createElement("div");
+
   errorDiv.className = "alert alert-danger mt-3";
   errorDiv.textContent = message;
   forgotPassForm.appendChild(errorDiv);
@@ -55,6 +56,7 @@ function showError(message) {
 
 function showSuccess(message) {
   const successDiv = document.createElement("div");
+
   successDiv.className = "alert alert-success mt-3";
   successDiv.textContent = message;
   forgotPassForm.appendChild(successDiv);
