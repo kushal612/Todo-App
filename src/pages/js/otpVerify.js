@@ -1,26 +1,27 @@
 // Import our custom CSS
-import "../scss/login.scss";
-import "../scss/otp.scss";
+import '../scss/login.scss';
+import '../scss/otp.scss';
 
 // Import all of Bootstrap’s JS
-import * as bootstrap from "bootstrap";
-import AuthApi from "./AuthApi.js";
+// eslint-disable-next-line no-unused-vars
+import * as bootstrap from 'bootstrap';
+import AuthApi from './AuthApi.js';
 
 const authApi = new AuthApi();
 
 function OTPInput() {
-  const inputs = document.querySelectorAll("#otp > *[id]");
+  const inputs = document.querySelectorAll('#otp > *[id]');
 
   for (let i = 0; i < inputs.length; i++) {
-    inputs[i].addEventListener("keydown", function (event) {
-      if (event.key === "Backspace") {
-        inputs[i].value = "";
+    inputs[i].addEventListener('keydown', function (event) {
+      if (event.key === 'Backspace') {
+        inputs[i].value = '';
 
         if (i !== 0) {
           inputs[i - 1].focus();
         }
       } else {
-        if (i === inputs.length - 1 && inputs[i].value !== "") {
+        if (i === inputs.length - 1 && inputs[i].value !== '') {
           return true;
         } else if (event.keyCode > 47 && event.keyCode < 58) {
           inputs[i].value = event.key;
@@ -44,45 +45,45 @@ function OTPInput() {
 OTPInput();
 
 async function handleOTPVerification() {
-  const otpInputs = document.querySelectorAll("#otp input");
+  const otpInputs = document.querySelectorAll('#otp input');
   const otp = Array.from(otpInputs)
     .map((input) => input.value)
-    .join("");
+    .join('');
 
   if (otp.length !== 6) {
-    alert("Please enter the complete 6-digit OTP");
+    alert('Please enter the complete 6-digit OTP');
     return;
   }
 
-  const email = localStorage.getItem("pendingEmail");
+  const email = localStorage.getItem('pendingEmail');
 
   if (!email) {
-    alert("Email not found. Please try registering again.");
-    window.location.href = "./signUpPage.html";
+    alert('Email not found. Please try registering again.');
+    window.location.href = './signUpPage.html';
     return;
   }
 
-  const validateButton = document.querySelector(".validate");
+  const validateButton = document.querySelector('.validate');
   const originalText = validateButton.textContent;
-  validateButton.textContent = "Verifying...";
+  validateButton.textContent = 'Verifying...';
   validateButton.disabled = true;
 
   try {
     await authApi.verifyOTP(email, otp);
 
-    localStorage.removeItem("pendingEmail");
+    localStorage.removeItem('pendingEmail');
 
-    const successMessage = document.createElement("div");
+    const successMessage = document.createElement('div');
 
-    successMessage.className = "alert alert-success mt-3";
-    successMessage.textContent = "OTP verified successfully! Redirecting...";
-    document.querySelector(".card").appendChild(successMessage);
+    successMessage.className = 'alert alert-success mt-3';
+    successMessage.textContent = 'OTP verified successfully! Redirecting...';
+    document.querySelector('.card').appendChild(successMessage);
 
     setTimeout(() => {
-      window.location.href = "../../index.html";
+      window.location.href = '../../index.html';
     }, 1000);
   } catch (error) {
-    alert(error.message || "OTP verification failed. Please try again.");
+    alert(error.message || 'OTP verification failed. Please try again.');
   } finally {
     validateButton.textContent = originalText;
     validateButton.disabled = false;
@@ -90,39 +91,39 @@ async function handleOTPVerification() {
 }
 
 async function handleResendOTP() {
-  const email = localStorage.getItem("pendingEmail");
+  const email = localStorage.getItem('pendingEmail');
   if (!email) {
-    alert("Email not found. Please try registering again.");
-    window.location.href = "./signUpPage.html";
+    alert('Email not found. Please try registering again.');
+    window.location.href = './signUpPage.html';
     return;
   }
 
   try {
     await authApi.resendOTP(email);
 
-    alert("OTP has been resent to your email.");
+    alert('OTP has been resent to your email.');
   } catch (error) {
-    alert(error.message || "Failed to resend OTP. Please try again.");
+    alert(error.message || 'Failed to resend OTP. Please try again.');
   } finally {
-    resendLink.style.pointerEvents = "auto";
+    resendLink.style.pointerEvents = 'auto';
   }
 }
 
-const validateButton = document.querySelector(".validate");
+const validateButton = document.querySelector('.validate');
 
 if (validateButton) {
-  validateButton.addEventListener("click", handleOTPVerification);
+  validateButton.addEventListener('click', handleOTPVerification);
 }
 
-const resendLink = document.querySelector(".resend-link");
+const resendLink = document.querySelector('.resend-link');
 
 if (resendLink) {
-  resendLink.addEventListener("click", (e) => {
+  resendLink.addEventListener('click', (e) => {
     e.preventDefault();
     handleResendOTP();
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
   handleResendOTP();
 });

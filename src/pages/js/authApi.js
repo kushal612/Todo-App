@@ -1,5 +1,5 @@
-import axios from "axios";
-const API_BASE_URL = "http://localhost:3000/api/auth";
+import axios from 'axios';
+const API_BASE_URL = 'http://localhost:3000/api/auth';
 
 export default class AuthApi {
   api = axios.create({
@@ -9,6 +9,8 @@ export default class AuthApi {
   async register(email, password) {
     try {
       const response = await this.api.post(`/sign-up`, { email, password });
+
+      console.log(response);
     } catch (error) {
       throw error.response.data;
     }
@@ -18,8 +20,8 @@ export default class AuthApi {
     try {
       const response = await this.api.post(`/sign-in`, { email, password });
 
-      localStorage.setItem("access_token", response.data.access_token);
-      localStorage.setItem("refresh_token", response.data.refresh_token);
+      localStorage.setItem('access_token', response.data.access_token);
+      localStorage.setItem('refresh_token', response.data.refresh_token);
     } catch (error) {
       throw error.response.data;
     }
@@ -78,13 +80,13 @@ export default class AuthApi {
         newPassword,
       });
     } catch (error) {
-      throw error.response?.data || { message: "Unknown error" };
+      throw error.response?.data || { message: 'Unknown error' };
     }
   }
 
   async logout() {
     localStorage.clear();
-    window.location.href = "./pages/login.html";
+    window.location.href = './pages/login.html';
   }
 
   async refreshToken() {
@@ -92,7 +94,7 @@ export default class AuthApi {
       const response = await this.api.post(`/protected/refresh-token`);
 
       if (!response.ok) {
-        throw new Error("Token refresh failed");
+        throw new Error('Token refresh failed');
       }
 
       return response;
