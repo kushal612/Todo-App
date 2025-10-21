@@ -11,7 +11,7 @@
 // const passwordInput = document.getElementById("password-input");
 // const submitButton = document.querySelector('button[type="submit"]');
 
-// const authAPI = new authApi();
+// const authApi = new authApi();
 // async function handleLogin(event) {
 //   event.preventDefault();
 
@@ -30,7 +30,7 @@
 //   submitButton.disabled = true;
 
 //   try {
-//     await authAPI.login(email, password);
+//     await authApi.login(email, password);
 
 //     showSuccess("Login successful! Redirecting...");
 
@@ -79,14 +79,14 @@
 
 import "../scss/login.scss";
 import * as bootstrap from "bootstrap";
-import authApi from "./authApi.js";
+import AuthApi from "./AuthApi.js";
 
 const loginForm = document.querySelector("form");
 const emailInput = document.getElementById("email-input");
 const passwordInput = document.getElementById("password-input");
 const submitButton = document.querySelector('button[type="submit"]');
 
-const authAPI = new authApi();
+const authApi = new AuthApi();
 
 async function handleLogin(event) {
   event.preventDefault();
@@ -105,7 +105,7 @@ async function handleLogin(event) {
   submitButton.disabled = true;
 
   try {
-    await authAPI.login(email, password);
+    await authApi.login(email, password);
 
     const userData = { email };
     localStorage.setItem("user", JSON.stringify(userData));

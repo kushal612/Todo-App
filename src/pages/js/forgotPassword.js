@@ -1,8 +1,8 @@
 import "../scss/login.scss";
 import * as bootstrap from "bootstrap";
-import authApi from "./authApi.js";
+import AuthApi from "./AuthApi.js";
 
-const authAPI = new authApi();
+const authApi = new AuthApi();
 const forgotPassForm = document.querySelector("form");
 const emailInput = document.getElementById("email-input");
 const submitButton = document.querySelector('button[type="submit"]');
@@ -22,7 +22,7 @@ async function handleForgotPass(event) {
   submitButton.disabled = true;
 
   try {
-    const response = await authAPI.forgetPasswordSendOtp(email);
+    const response = await authApi.forgetPasswordSendOtp(email);
     console.log(response);
 
     showSuccess("OTP sent! Check your email...");

@@ -1,4 +1,4 @@
-import todoApi from "./api.js";
+import TodoApi from "./TodoApi.js";
 import * as bootstrap from "bootstrap";
 import { formatDate, getImportanceBadge } from "./utils.js";
 
@@ -12,7 +12,7 @@ const editModal = new bootstrap.Modal(document.getElementById("editModal"));
 const editTaskInput = document.getElementById("editTaskInput");
 const editImportanceSelect = document.getElementById("editImportanceSelect");
 const editTagsInput = document.getElementById("editTagsInput");
-const todoAPI = new todoApi();
+const todoApi = new TodoApi();
 
 export function getTasksState() {
   return tasks;
@@ -97,9 +97,9 @@ export function renderTasks(newTasks) {
     `;
 
     el.querySelector("input").addEventListener("change", async (e) => {
-      await todoAPI.updateTask(t._id, { isCompleted: e.target.checked });
+      await todoApi.updateTask(t._id, { isCompleted: e.target.checked });
       t.isCompleted = e.target.checked;
-      const updatedTasks = await todoAPI.getTasks({
+      const updatedTasks = await todoApi.getTasks({
         currentFilter,
         currentPriorityFilter,
         search: "",

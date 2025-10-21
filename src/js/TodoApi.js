@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API_URL = "http://localhost:3000/api/todos/";
 
-export default class todoApi {
+export default class TodoApi {
   api = axios.create({
     baseURL: API_URL,
   });
@@ -19,7 +19,6 @@ export default class todoApi {
         return config;
       },
       function (error) {
-        console.log(error);
         return Promise.reject(error);
       }
     );

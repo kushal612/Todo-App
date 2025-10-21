@@ -1,4 +1,4 @@
-import todoApi from "./api.js";
+import TodoApi from "./TodoApi.js";
 
 import {
   renderTasks,
@@ -12,7 +12,7 @@ import {
 
 import * as bootstrap from "bootstrap";
 
-const todoAPI = new todoApi();
+const todoApi = new TodoApi();
 const inputTask = document.getElementById("inputTask");
 const addBtn = document.getElementById("addBtn");
 const tag = document.getElementById("tagInput");
@@ -32,7 +32,7 @@ const editImportanceSelect = document.getElementById("editImportanceSelect");
 const editTagsInput = document.getElementById("editTagsInput");
 
 export async function loadTasks() {
-  const result = await todoAPI.getTasks({
+  const result = await todoApi.getTasks({
     filter: getCurrentFilter(),
     priority: getCurrentPriorityFilter(),
     search: searchInput.value.trim(),
@@ -42,7 +42,7 @@ export async function loadTasks() {
 
 addBtn.addEventListener("click", async () => {
   if (!inputTask.value.trim()) return;
-  await todoAPI.addTask(inputTask.value, imp.value, tag.value);
+  await todoApi.addTask(inputTask.value, imp.value, tag.value);
   inputTask.value = "";
   tag.value = "";
   await loadTasks();
@@ -73,13 +73,13 @@ document.querySelectorAll(".priority").forEach((btn) => {
 searchInput.addEventListener("input", loadTasks);
 
 clearCompleted.addEventListener("click", async () => {
-  await todoAPI.clearCompletedTasks();
+  await todoApi.clearCompletedTasks();
   await loadTasks();
 });
 
 clearAll.addEventListener("click", () => clearAllModal.show());
 confirmClearAllBtn.addEventListener("click", async () => {
-  await todoAPI.clearAllTasks();
+  await todoApi.clearAllTasks();
   clearAllModal.hide();
   await loadTasks();
 });
@@ -95,12 +95,12 @@ saveEditBtn.addEventListener("click", async () => {
           .map((t) => t.toLowerCase())
       : [],
   };
-  await todoAPI.updateTask(getTaskIdToEdit(), data);
+  await todoApi.updateTask(getTaskIdToEdit(), data);
   editModal.hide();
   await loadTasks();
 });
 
 document.addEventListener("deleteTask", async (e) => {
-  await todoAPI.deleteTask(e.detail);
+  await todoApi.deleteTask(e.detail);
   await loadTasks();
 });

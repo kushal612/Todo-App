@@ -1,6 +1,6 @@
-import authApi from "./authApi.js";
+import AuthApi from "./AuthApi.js";
 
-const authAPI = new authApi();
+const authApi = new AuthApi();
 
 const form = document.getElementById("resetPasswordForm");
 const emailInput = document.getElementById("emailInput");
@@ -21,7 +21,7 @@ form.addEventListener("submit", async (e) => {
   }
 
   try {
-    await authAPI.resetNewPassword(email, oldPassword, newPassword);
+    await authApi.resetNewPassword(email, oldPassword, newPassword);
     showMessage("Password updated successfully! Redirecting...", "success");
 
     setTimeout(() => {

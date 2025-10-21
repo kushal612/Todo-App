@@ -1,5 +1,5 @@
-import authApi from "./authApi.js";
-const authAPI = new authApi();
+import AuthApi from "./AuthApi.js";
+const authApi = new AuthApi();
 
 const form = document.getElementById("reset-form");
 const passwordInput = document.getElementById("newPassword");
@@ -15,7 +15,7 @@ form.addEventListener("submit", async (e) => {
   }
 
   try {
-    await authAPI.forgetPasswordReset(email, newPassword);
+    await authApi.forgetPasswordReset(email, newPassword);
     alert("Password reset successful!");
 
     // Clean temporary email

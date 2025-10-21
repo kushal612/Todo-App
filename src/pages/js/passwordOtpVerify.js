@@ -1,5 +1,5 @@
-import authApi from "./authApi.js";
-const authAPI = new authApi();
+import AuthApi from "./AuthApi.js";
+const authApi = new AuthApi();
 
 const otpForm = document.getElementById("otp-form");
 const otpInput = document.getElementById("otp");
@@ -15,7 +15,7 @@ otpForm.addEventListener("submit", async (e) => {
   }
 
   try {
-    await authAPI.forgetPasswordVerifyOtp(email, otp);
+    await authApi.forgetPasswordVerifyOtp(email, otp);
     alert("OTP Verified Successfully!");
 
     // Redirect to reset password page

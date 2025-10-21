@@ -4,13 +4,13 @@ import "../scss/login.scss";
 // Import all of Bootstrap's JS
 import * as bootstrap from "bootstrap";
 
-import authApi from "./authApi.js";
+import AuthApi from "./AuthApi.js";
 
 const signupForm = document.getElementById("signup-form");
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 const submitButton = document.getElementById("submit-btn");
-const authAPI = new authApi();
+const authApi = new AuthApi();
 
 async function handleSignup(event) {
   event.preventDefault();
@@ -29,7 +29,7 @@ async function handleSignup(event) {
   submitButton.disabled = true;
 
   try {
-    const response = await authAPI.register(email, password);
+    const response = await authApi.register(email, password);
     console.log("Registration response:", response);
 
     localStorage.setItem("pendingEmail", email);
@@ -41,7 +41,7 @@ async function handleSignup(event) {
     }, 1000);
   } catch (error) {
     console.error("Registration error:", error);
-
+    showError(error.error);
     if (
       error.message.includes("Failed to fetch") ||
       error.message.includes("NetworkError")

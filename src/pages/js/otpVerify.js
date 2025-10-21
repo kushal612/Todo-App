@@ -4,9 +4,9 @@ import "../scss/otp.scss";
 
 // Import all of Bootstrap’s JS
 import * as bootstrap from "bootstrap";
-import authApi from "./authApi.js";
+import AuthApi from "./AuthApi.js";
 
-const authAPI = new authApi();
+const authApi = new AuthApi();
 
 function OTPInput() {
   const inputs = document.querySelectorAll("#otp > *[id]");
@@ -64,7 +64,7 @@ async function handleOTPVerification() {
   validateButton.disabled = true;
 
   try {
-    await authAPI.verifyOTP(email, otp);
+    await authApi.verifyOTP(email, otp);
 
     localStorage.removeItem("pendingEmail");
 
@@ -99,7 +99,7 @@ async function handleResendOTP() {
   // resendLink.style.pointerEvents = 'none';
 
   try {
-    await authAPI.resendOTP(email);
+    await authApi.resendOTP(email);
     alert("OTP has been resent to your email.");
   } catch (error) {
     alert(error.message || "Failed to resend OTP. Please try again.");
