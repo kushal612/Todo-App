@@ -70,6 +70,17 @@ export default class authApi {
       throw error.response.data;
     }
   }
+  async resetNewPassword(email, oldPassword, newPassword) {
+    try {
+      await this.api.post(`/reset-password`, {
+        email,
+        oldPassword,
+        newPassword,
+      });
+    } catch (error) {
+      throw error.response?.data || { message: "Unknown error" };
+    }
+  }
 
   async logout() {
     localStorage.clear();
