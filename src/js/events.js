@@ -101,5 +101,6 @@ saveEditBtn.addEventListener('click', async () => {
 
 document.addEventListener('deleteTask', async (e) => {
   await todoApi.deleteTask(e.detail);
+
   await loadTasks();
 });

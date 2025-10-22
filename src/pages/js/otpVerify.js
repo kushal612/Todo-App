@@ -9,7 +9,7 @@ import AuthApi from './AuthApi.js';
 
 const authApi = new AuthApi();
 
-function OTPInput() {
+function otpInput() {
   const inputs = document.querySelectorAll('#otp > *[id]');
 
   for (let i = 0; i < inputs.length; i++) {
@@ -42,7 +42,7 @@ function OTPInput() {
     });
   }
 }
-OTPInput();
+otpInput();
 
 async function handleOTPVerification() {
   const otpInputs = document.querySelectorAll('#otp input');
