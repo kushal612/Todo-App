@@ -57,17 +57,13 @@ export default class AuthApi {
     }
   }
 
-  async forgetPasswordVerifyOtp(email, otp) {
+  async forgetPasswordReset(email, otp, newPassword) {
     try {
-      await this.api.post(`/forgot-password/verifyOTP`, { email, otp });
-    } catch (error) {
-      throw error.response.data;
-    }
-  }
-
-  async forgetPasswordReset(email, newPassword) {
-    try {
-      await this.api.post(`/forgot-password/reset`, { email, newPassword });
+      await this.api.post(`/forgot-password/reset`, {
+        email,
+        otp,
+        newPassword,
+      });
     } catch (error) {
       throw error.response.data;
     }

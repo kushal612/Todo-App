@@ -6,6 +6,7 @@ import '../scss/otp.scss';
 // eslint-disable-next-line no-unused-vars
 import * as bootstrap from 'bootstrap';
 import AuthApi from './AuthApi.js';
+import { showMessage } from './message.js';
 
 const authApi = new AuthApi();
 
@@ -93,7 +94,7 @@ async function handleOTPVerification() {
 async function handleResendOTP() {
   const email = localStorage.getItem('pendingEmail');
   if (!email) {
-    alert('Email not found. Please try registering again.');
+    showMessage('Email not found. Please try registering again.', 'warning');
     window.location.href = './signUpPage.html';
     return;
   }
@@ -101,9 +102,12 @@ async function handleResendOTP() {
   try {
     await authApi.resendOTP(email);
 
-    alert('OTP has been resent to your email.');
+    showMessage('OTP has been resent to your email.');
   } catch (error) {
-    alert(error.message || 'Failed to resend OTP. Please try again.');
+    showMessage(
+      error.message || 'Failed to resend OTP. Please try again.',
+      'danger'
+    );
   } finally {
     resendLink.style.pointerEvents = 'auto';
   }

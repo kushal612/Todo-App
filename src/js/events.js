@@ -40,7 +40,9 @@ export async function loadTasks() {
 }
 
 addBtn.addEventListener('click', async () => {
-  if (!inputTask.value.trim()) return;
+  if (!inputTask.value.trim()) {
+    return;
+  }
   await todoApi.addTask(inputTask.value, imp.value, tag.value);
   inputTask.value = '';
   tag.value = '';
@@ -96,11 +98,5 @@ saveEditBtn.addEventListener('click', async () => {
   };
   await todoApi.updateTask(getTaskIdToEdit(), data);
   editModal.hide();
-  await loadTasks();
-});
-
-document.addEventListener('deleteTask', async (e) => {
-  await todoApi.deleteTask(e.detail);
-
   await loadTasks();
 });

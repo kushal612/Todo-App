@@ -19,27 +19,35 @@ const todoApi = new TodoApi();
 export function getCurrentFilter() {
   return currentFilter;
 }
+
 export function getCurrentPriorityFilter() {
   return currentPriorityFilter;
 }
+
 export function getTaskIdToEdit() {
   return taskIdToEdit;
 }
+
 export function getTaskIdToDelete() {
   return taskIdToDelete;
 }
+
 export function setTaskIdToDelete(value) {
   taskIdToDelete = value;
 }
+
 export function setCurrentFilter(value) {
   currentFilter = value;
 }
+
 export function setCurrentPriorityFilter(value) {
   currentPriorityFilter = value;
 }
+
 export function setTaskIdToEdit(value) {
   taskIdToEdit = value;
 }
+
 async function handleDeleteTask(taskId) {
   await todoApi.deleteTask(taskId);
 

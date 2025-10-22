@@ -81,6 +81,7 @@ import '../scss/login.scss';
 // eslint-disable-next-line no-unused-vars
 import * as bootstrap from 'bootstrap';
 import AuthApi from './AuthApi.js';
+import { showMessage } from './message.js';
 
 const loginForm = document.querySelector('form');
 const emailInput = document.getElementById('email-input');
@@ -97,7 +98,7 @@ async function handleLogin(event) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   if (!emailRegex.test(email)) {
-    showError('Please enter a valid email address');
+    showMessage('Please enter a valid email address', 'danger');
     return;
   }
 
@@ -113,13 +114,16 @@ async function handleLogin(event) {
 
     localStorage.setItem('user', JSON.stringify(userData));
 
-    showSuccess('Login successful! Redirecting...');
+    showMessage('Login successful! Redirecting...', 'success');
 
     setTimeout(() => {
       window.location.href = '../../index.html';
     }, 1000);
   } catch (error) {
-    showError(error.message || 'Login failed. Please check your credentials.');
+    showMessage(
+      error.message || 'Login failed. Please check your credentials.',
+      'danger'
+    );
   } finally {
     submitButton.textContent = originalText;
     submitButton.disabled = false;
@@ -130,32 +134,32 @@ if (loginForm) {
   loginForm.addEventListener('submit', handleLogin);
 }
 
-function showError(message) {
-  const existingError = document.querySelector('.error-message');
+// function showError(message) {
+//   const existingError = document.querySelector('.error-message');
 
-  if (existingError) {
-    existingError.remove();
-  }
+//   if (existingError) {
+//     existingError.remove();
+//   }
 
-  const errorDiv = document.createElement('div');
+//   const errorDiv = document.createElement('div');
 
-  errorDiv.className = 'alert alert-danger error-message mt-3';
-  errorDiv.textContent = message;
-  loginForm.parentNode.insertBefore(errorDiv, loginForm.nextSibling);
-}
+//   errorDiv.className = 'alert alert-danger error-message mt-3';
+//   errorDiv.textContent = message;
+//   loginForm.parentNode.insertBefore(errorDiv, loginForm.nextSibling);
+// }
 
-function showSuccess(message) {
-  const existingMessage = document.querySelector(
-    '.error-message, .success-message'
-  );
+// function showSuccess(message) {
+//   const existingMessage = document.querySelector(
+//     '.error-message, .success-message'
+//   );
 
-  if (existingMessage) {
-    existingMessage.remove();
-  }
+//   if (existingMessage) {
+//     existingMessage.remove();
+//   }
 
-  const successDiv = document.createElement('div');
+//   const successDiv = document.createElement('div');
 
-  successDiv.className = 'alert alert-success success-message mt-3';
-  successDiv.textContent = message;
-  loginForm.parentNode.insertBefore(successDiv, loginForm.nextSibling);
-}
+//   successDiv.className = 'alert alert-success success-message mt-3';
+//   successDiv.textContent = message;
+//   loginForm.parentNode.insertBefore(successDiv, loginForm.nextSibling);
+// }

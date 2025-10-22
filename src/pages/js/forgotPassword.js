@@ -31,7 +31,7 @@ async function handleForgotPass(event) {
     localStorage.setItem('reset_email', email);
 
     setTimeout(() => {
-      window.location.href = './passwordOtpVerify.html';
+      window.location.href = './resetForgotPassword.html';
     }, 1500);
   } catch (error) {
     showError(error.message || 'Failed to send OTP. Please try again.');
