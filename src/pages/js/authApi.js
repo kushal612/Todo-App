@@ -27,9 +27,9 @@ export default class AuthApi {
     }
   }
 
-  async verifyOTP(email, otp) {
+  async verifyOtp(email, otp) {
     try {
-      const response = await this.api.post(`/verifyOTP`, { email, otp });
+      const response = await this.api.post(`/verifyOtp`, { email, otp });
 
       return response;
     } catch (error) {
@@ -37,7 +37,7 @@ export default class AuthApi {
     }
   }
 
-  async resendOTP(email) {
+  async resendOtp(email) {
     try {
       await this.api.post(`/send-otp`, { email });
     } catch (error) {

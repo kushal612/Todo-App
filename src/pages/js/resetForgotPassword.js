@@ -1,10 +1,10 @@
 import AuthApi from './AuthApi.js';
-const authApi = new AuthApi();
+import { showMessage } from './message.js';
 
+const authApi = new AuthApi();
 const form = document.getElementById('reset-form');
 const passwordInput = document.getElementById('newPassword');
 const otpInput = document.getElementById('otp');
-const messageDiv = document.getElementById('message');
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -33,7 +33,3 @@ form.addEventListener('submit', async (e) => {
     console.log(error.message);
   }
 });
-
-function showMessage(text, type = 'info') {
-  messageDiv.innerHTML = `<div class="alert alert-${type}" role="alert">${text}</div>`;
-}

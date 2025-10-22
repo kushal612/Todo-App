@@ -1,10 +1,9 @@
 // Import our custom CSS
 import '../scss/login.scss';
-
 // Import all of Bootstrap's JS
 // eslint-disable-next-line no-unused-vars
 import * as bootstrap from 'bootstrap';
-
+import { showMessage } from './message.js';
 import AuthApi from './AuthApi.js';
 
 const signupForm = document.getElementById('signup-form');
@@ -21,7 +20,7 @@ async function handleSignup(event) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   if (!emailRegex.test(email)) {
-    showError('Please enter a valid email address');
+    showMessage('Please enter a valid email address', 'danger');
     return;
   }
 
@@ -36,23 +35,29 @@ async function handleSignup(event) {
 
     localStorage.setItem('pendingEmail', email);
 
-    showSuccess('Registration successful! Please check your email for OTP.');
+    showMessage(
+      'Registration successful! Please check your email for OTP.',
+      'success'
+    );
 
     setTimeout(() => {
       window.location.href = './otpVerify.html';
     }, 1000);
   } catch (error) {
     console.error('Registration error:', error);
-    showError(error.error);
+    showMessage(error.error);
     if (
       error.message.includes('Failed to fetch') ||
       error.message.includes('NetworkError')
     ) {
-      showError(
+      showMessage(
         'Backend server is not running. Please start your backend server and try again.'
       );
     } else {
-      showError(error.message || 'Registration failed. Please try again.');
+      showMessage(
+        error.message || 'Registration failed. Please try again.',
+        'danger'
+      );
     }
   } finally {
     submitButton.textContent = originalText;
@@ -62,36 +67,4 @@ async function handleSignup(event) {
 
 if (signupForm) {
   signupForm.addEventListener('submit', handleSignup);
-} else {
-  console.error('Signup form not found!');
-}
-
-function showSuccess(message) {
-  const existingMessage = document.querySelector(
-    '.error-message, .success-message'
-  );
-
-  if (existingMessage) {
-    existingMessage.remove();
-  }
-
-  const successDiv = document.createElement('div');
-  successDiv.className = 'alert alert-success success-message mt-3';
-  successDiv.textContent = message;
-
-  signupForm.parentNode.insertBefore(successDiv, signupForm.nextSibling);
-}
-
-function showError(message) {
-  const existingError = document.querySelector('.error-message');
-
-  if (existingError) {
-    existingError.remove();
-  }
-
-  const errorDiv = document.createElement('div');
-  errorDiv.className = 'alert alert-danger error-message mt-3';
-  errorDiv.textContent = message;
-
-  signupForm.parentNode.insertBefore(errorDiv, signupForm.nextSibling);
 }

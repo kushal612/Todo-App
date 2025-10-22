@@ -2,6 +2,7 @@ import '../scss/login.scss';
 // eslint-disable-next-line no-unused-vars
 import * as bootstrap from 'bootstrap';
 import AuthApi from './AuthApi.js';
+import { showMessage } from './message.js';
 
 const authApi = new AuthApi();
 const forgotPassForm = document.querySelector('form');
@@ -15,7 +16,7 @@ async function handleForgotPass(event) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   if (!emailRegex.test(email)) {
-    showError('Please enter a valid email address');
+    showMessage('Please enter a valid email address', 'danger');
     return;
   }
 
@@ -26,7 +27,7 @@ async function handleForgotPass(event) {
     const response = await authApi.forgetPasswordSendOtp(email);
     console.log(response);
 
-    showSuccess('OTP sent! Check your email...');
+    showMessage('OTP sent! Check your email...', 'info');
 
     localStorage.setItem('reset_email', email);
 
@@ -34,7 +35,10 @@ async function handleForgotPass(event) {
       window.location.href = './resetForgotPassword.html';
     }, 1500);
   } catch (error) {
-    showError(error.message || 'Failed to send OTP. Please try again.');
+    showMessage(
+      error.message || 'Failed to send OTP. Please try again.',
+      'danger'
+    );
   } finally {
     submitButton.textContent = 'Send OTP';
     submitButton.disabled = false;
@@ -43,20 +47,4 @@ async function handleForgotPass(event) {
 
 if (forgotPassForm) {
   forgotPassForm.addEventListener('submit', handleForgotPass);
-}
-
-function showError(message) {
-  const errorDiv = document.createElement('div');
-
-  errorDiv.className = 'alert alert-danger mt-3';
-  errorDiv.textContent = message;
-  forgotPassForm.appendChild(errorDiv);
-}
-
-function showSuccess(message) {
-  const successDiv = document.createElement('div');
-
-  successDiv.className = 'alert alert-success mt-3';
-  successDiv.textContent = message;
-  forgotPassForm.appendChild(successDiv);
 }

@@ -45,22 +45,22 @@ function otpInput() {
 }
 otpInput();
 
-async function handleOTPVerification() {
+async function handleOtpVerification() {
   const otpInputs = document.querySelectorAll('#otp input');
   const otp = Array.from(otpInputs)
     .map((input) => input.value)
     .join('');
 
   if (otp.length !== 6) {
-    alert('Please enter the complete 6-digit OTP');
+    showMessage('Please enter the complete 6-digit OTP', 'warning');
     return;
   }
 
   const email = localStorage.getItem('pendingEmail');
 
   if (!email) {
-    alert('Email not found. Please try registering again.');
-    window.location.href = './signUpPage.html';
+    showMessage('Email not found. Please try registering again.', 'warning');
+    window.location.href = './signUp.html';
     return;
   }
 
@@ -70,37 +70,36 @@ async function handleOTPVerification() {
   validateButton.disabled = true;
 
   try {
-    await authApi.verifyOTP(email, otp);
+    await authApi.verifyOtp(email, otp);
 
     localStorage.removeItem('pendingEmail');
 
-    const successMessage = document.createElement('div');
-
-    successMessage.className = 'alert alert-success mt-3';
-    successMessage.textContent = 'OTP verified successfully! Redirecting...';
-    document.querySelector('.card').appendChild(successMessage);
+    showMessage('OTP verified successfully! Redirecting...', 'success');
 
     setTimeout(() => {
       window.location.href = '../../index.html';
     }, 1000);
   } catch (error) {
-    alert(error.message || 'OTP verification failed. Please try again.');
+    showMessage(
+      error.message || 'OTP verification failed. Please try again.',
+      'danger'
+    );
   } finally {
     validateButton.textContent = originalText;
     validateButton.disabled = false;
   }
 }
 
-async function handleResendOTP() {
+async function handleResendOtp() {
   const email = localStorage.getItem('pendingEmail');
   if (!email) {
     showMessage('Email not found. Please try registering again.', 'warning');
-    window.location.href = './signUpPage.html';
+    window.location.href = './signUp.html';
     return;
   }
 
   try {
-    await authApi.resendOTP(email);
+    await authApi.resendOtp(email);
 
     showMessage('OTP has been resent to your email.');
   } catch (error) {
@@ -116,7 +115,7 @@ async function handleResendOTP() {
 const validateButton = document.querySelector('.validate');
 
 if (validateButton) {
-  validateButton.addEventListener('click', handleOTPVerification);
+  validateButton.addEventListener('click', handleOtpVerification);
 }
 
 const resendLink = document.querySelector('.resend-link');
@@ -124,10 +123,10 @@ const resendLink = document.querySelector('.resend-link');
 if (resendLink) {
   resendLink.addEventListener('click', (e) => {
     e.preventDefault();
-    handleResendOTP();
+    handleResendOtp();
   });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  handleResendOTP();
+  handleResendOtp();
 });

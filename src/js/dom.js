@@ -156,9 +156,11 @@ export function profileIcon() {
     const logoutBtn = document.getElementById('logout-btn');
 
     const user = JSON.parse(localStorage.getItem('user'));
+    const userEmail = user.email;
+    const username = userEmail.split('')[0];
 
-    if (user && user.email && emailSpan) {
-      emailSpan.textContent = user.email;
+    if (user && user.email && username) {
+      emailSpan.textContent = username;
     }
 
     logoutBtn.addEventListener('click', () => {

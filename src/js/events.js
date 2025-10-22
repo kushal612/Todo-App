@@ -1,5 +1,5 @@
+import * as bootstrap from 'bootstrap';
 import TodoApi from './TodoApi.js';
-
 import {
   renderTasks,
   getCurrentFilter,
@@ -8,8 +8,6 @@ import {
   setCurrentFilter,
   setCurrentPriorityFilter,
 } from './dom.js';
-
-import * as bootstrap from 'bootstrap';
 
 const todoApi = new TodoApi();
 const inputTask = document.getElementById('inputTask');
@@ -43,6 +41,7 @@ addBtn.addEventListener('click', async () => {
   if (!inputTask.value.trim()) {
     return;
   }
+
   await todoApi.addTask(inputTask.value, imp.value, tag.value);
   inputTask.value = '';
   tag.value = '';
@@ -54,7 +53,9 @@ filters.addEventListener('click', async (e) => {
     document
       .querySelectorAll('#filters button')
       .forEach((b) => b.classList.remove('active'));
+
     e.target.closest('button').classList.add('active');
+
     setCurrentFilter(e.target.closest('button').dataset.filter);
     await loadTasks();
   }
@@ -65,7 +66,9 @@ document.querySelectorAll('.priority').forEach((btn) => {
     document
       .querySelectorAll('.priority')
       .forEach((b) => b.classList.remove('active'));
+
     e.target.classList.add('active');
+
     setCurrentPriorityFilter(e.target.dataset.filter);
     await loadTasks();
   });
@@ -75,13 +78,16 @@ searchInput.addEventListener('input', loadTasks);
 
 clearCompleted.addEventListener('click', async () => {
   await todoApi.clearCompletedTasks();
+
   await loadTasks();
 });
 
 clearAll.addEventListener('click', () => clearAllModal.show());
 confirmClearAllBtn.addEventListener('click', async () => {
   await todoApi.clearAllTasks();
+
   clearAllModal.hide();
+
   await loadTasks();
 });
 
@@ -96,7 +102,10 @@ saveEditBtn.addEventListener('click', async () => {
           .map((t) => t.toLowerCase())
       : [],
   };
+
   await todoApi.updateTask(getTaskIdToEdit(), data);
+
   editModal.hide();
+
   await loadTasks();
 });
