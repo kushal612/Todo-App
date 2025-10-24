@@ -40,10 +40,23 @@
           data-bs-toggle="dropdown"
           aria-expanded="false"
         >
-          <i class="bi bi-person-circle me-2"></i>
+          <img
+            id="preview"
+            src="./assets/img/profile.png"
+            alt="Profile Preview"
+            class="rounded-circle"
+            width="25"
+            height="25"
+          />
           <span id="user-email">User</span>
         </button>
         <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+          <li>
+            <a class="dropdown-item" href="./pages/editProfile.html"
+              >Edit Profile</a
+            >
+          </li>
+          <li><hr class="dropdown-divider" /></li>
           <li>
             <a class="dropdown-item" href="./pages/resetNewPassword.html"
               >Set New Password</a
