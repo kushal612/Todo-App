@@ -35,7 +35,7 @@ async function handleLogin(event) {
 
     localStorage.setItem('user', JSON.stringify(userData));
 
-    showMessage('Login successful! Redirecting...', 'success');
+    showMessage('Login successful', 'success');
 
     setTimeout(() => {
       window.location.href = '../../index.html';

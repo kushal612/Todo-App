@@ -12,7 +12,7 @@ function profileIcon() {
     const username = userEmail.split('')[0];
 
     if (user && user.email && username) {
-      emailSpan.textContent = username;
+      emailSpan.textContent = username.toUpperCase();
     }
 
     if (user.profileImage) {

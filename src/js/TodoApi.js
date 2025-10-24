@@ -78,7 +78,7 @@ export default class TodoApi {
           }
         }
 
-        if (error.response && error.response.status === 403) {
+        if (error.response) {
           localStorage.removeItem('access_token');
           localStorage.removeItem('refresh_token');
 
