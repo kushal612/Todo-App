@@ -143,29 +143,10 @@ export function renderTasks(newTasks) {
 
     el.querySelector('.btn-delete').addEventListener('click', async () => {
       setTaskIdToDelete(t._id);
+
       deleteModal.show();
     });
 
     tasksList.appendChild(el);
-  });
-}
-
-export function profileIcon() {
-  document.addEventListener('DOMContentLoaded', () => {
-    const emailSpan = document.getElementById('user-email');
-    const logoutBtn = document.getElementById('logout-btn');
-
-    const user = JSON.parse(localStorage.getItem('user'));
-    const userEmail = user.email;
-    const username = userEmail.split('')[0];
-
-    if (user && user.email && username) {
-      emailSpan.textContent = username;
-    }
-
-    logoutBtn.addEventListener('click', () => {
-      localStorage.clear();
-      window.location.href = './pages/loginPage.html';
-    });
   });
 }
