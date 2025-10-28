@@ -4,7 +4,7 @@ import '../scss/login.scss';
 // eslint-disable-next-line no-unused-vars
 import * as bootstrap from 'bootstrap';
 import { showMessage } from './message.js';
-import AuthApi from './AuthApi.js';
+import AuthApi from './authApi.js';
 
 const signupForm = document.getElementById('signup-form');
 const emailInput = document.getElementById('email');

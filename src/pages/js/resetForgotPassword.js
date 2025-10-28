@@ -1,4 +1,4 @@
-import AuthApi from './AuthApi.js';
+import AuthApi from './authApi.js';
 import { showMessage } from './message.js';
 
 const authApi = new AuthApi();
