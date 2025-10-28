@@ -34,21 +34,16 @@
           height="50"
         />
       </div>
-      <form
-        id="edit-profile-form"
-        action="/upload"
-        method="post"
-        enctype="multipart/form-data"
-      >
+      <form id="edit-profile-form" enctype="multipart/form-data">
         <div class="mb-3">
-          <label for="profileImage" class="form-label"
+          <label for="profile_image" class="form-label"
             >Upload Profile Image</label
           >
           <input
             class="form-control"
             type="file"
             id="profileImage"
-            name="file"
+            name="profile_image"
             accept="image/*"
           />
         </div>

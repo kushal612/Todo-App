@@ -1,42 +1,27 @@
 import '../scss/styles.scss';
 // eslint-disable-next-line no-unused-vars
 import * as bootstrap from 'bootstrap';
-
+import AuthApi from '../pages/js/authApi.js';
 import { showMessage } from '../pages/js/message.js';
 
 function editProfile() {
-  document.addEventListener('DOMContentLoaded', () => {
-    const imageInput = document.getElementById('profileImage');
+  document.addEventListener('DOMContentLoaded', async () => {
     const form = document.getElementById('edit-profile-form');
+    const profileImage = document.getElementById('profileImage');
     const preview = document.getElementById('preview');
-    const user = JSON.parse(localStorage.getItem('user'));
 
-    if (user.profileImage) {
-      preview.src = user.profileImage;
+    const authService = new AuthApi();
+    const userInfo = await authService.getUserInfo();
+
+    if (userInfo.profileImage) {
+      preview.src = 'http://localhost:3000/uploads/' + userInfo.profileImage;
     }
 
-    imageInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-
-      if (file) {
-        const reader = new FileReader();
-        console.log(reader);
-
-        reader.onload = () => {
-          preview.src = reader.result;
-        };
-
-        reader.readAsDataURL(file);
-      }
-    });
-
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      user.profileImage = preview.src;
 
-      localStorage.setItem('user', JSON.stringify(user));
-
-      showMessage('Profile image is updated', 'success');
+      await authService.updateUserInfo(profileImage.files[0]);
+      showMessage('Profile Updated', 'success');
 
       setTimeout(() => {
         window.location.href = '../index.html';

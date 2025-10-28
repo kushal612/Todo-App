@@ -1,7 +1,7 @@
 import '../scss/login.scss';
 // eslint-disable-next-line no-unused-vars
 import * as bootstrap from 'bootstrap';
-import AuthApi from './AuthApi.js';
+import AuthApi from './authApi.js';
 import { showMessage } from './message.js';
 
 const authApi = new AuthApi();

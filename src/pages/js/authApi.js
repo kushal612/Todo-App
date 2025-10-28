@@ -98,4 +98,32 @@ export default class AuthApi {
       throw error.response.data;
     }
   }
+
+  async getUserInfo() {
+    const response = await this.api.get('/user', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+      },
+    });
+    const user = response.data.result;
+
+    return user;
+  }
+
+  async updateUserInfo(profile_image) {
+    const formData = new FormData();
+
+    formData.append('profile_image', profile_image);
+
+    const response = await this.api.put('/user', formData, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    const user = response.data.result;
+
+    return user;
+  }
 }
