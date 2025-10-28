@@ -15,7 +15,11 @@ function profileIcon() {
     const authService = new AuthApi();
     const response = await authService.getUserInfo();
 
-    if (user && user.email && username) {
+    console.log(response);
+
+    if (response.name) {
+      emailSpan.textContent = response.name;
+    } else if (user && user.email && username) {
       emailSpan.textContent = username.toUpperCase();
     }
 

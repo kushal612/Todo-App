@@ -10,10 +10,15 @@ function editProfile() {
     const profileImage = document.getElementById('profileImage');
     const preview = document.getElementById('preview');
     const userEmail = document.getElementById('user-email');
+    const username = document.getElementById('username');
 
     const user = JSON.parse(localStorage.getItem('user'));
     const authService = new AuthApi();
     const userInfo = await authService.getUserInfo();
+
+    if (userInfo.name) {
+      username.placeholder = userInfo.name;
+    }
 
     if (userInfo.profileImage) {
       preview.src = 'http://localhost:3000/uploads/' + userInfo.profileImage;
@@ -22,7 +27,7 @@ function editProfile() {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      await authService.updateUserInfo(profileImage.files[0]);
+      await authService.updateUserInfo(username.value, profileImage.files[0]);
       showMessage('Profile Updated', 'success');
 
       setTimeout(() => {

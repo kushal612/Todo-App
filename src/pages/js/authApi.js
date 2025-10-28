@@ -110,9 +110,10 @@ export default class AuthApi {
     return user;
   }
 
-  async updateUserInfo(profile_image) {
+  async updateUserInfo(username, profile_image) {
     const formData = new FormData();
 
+    formData.append('name', username);
     formData.append('profile_image', profile_image);
 
     const response = await this.api.put('/user', formData, {
