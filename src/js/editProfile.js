@@ -9,14 +9,16 @@ function editProfile() {
     const form = document.getElementById('edit-profile-form');
     const profileImage = document.getElementById('profileImage');
     const preview = document.getElementById('preview');
+    const userEmail = document.getElementById('user-email');
 
+    const user = JSON.parse(localStorage.getItem('user'));
     const authService = new AuthApi();
     const userInfo = await authService.getUserInfo();
 
     if (userInfo.profileImage) {
       preview.src = 'http://localhost:3000/uploads/' + userInfo.profileImage;
     }
-
+    userEmail.innerText = user.email;
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
