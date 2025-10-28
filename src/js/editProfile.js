@@ -17,7 +17,7 @@ function editProfile() {
     const userInfo = await authService.getUserInfo();
 
     if (userInfo.name) {
-      username.placeholder = userInfo.name;
+      username.value = userInfo.name;
     }
 
     if (userInfo.profileImage) {
@@ -26,13 +26,17 @@ function editProfile() {
     userEmail.innerText = user.email;
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      try {
+        await authService.updateUserInfo(username.value, profileImage.files[0]);
+        showMessage('Profile Updated', 'success');
 
-      await authService.updateUserInfo(username.value, profileImage.files[0]);
-      showMessage('Profile Updated', 'success');
-
-      setTimeout(() => {
-        window.location.href = '../index.html';
-      }, 1500);
+        setTimeout(() => {
+          window.location.href = '../index.html';
+        }, 1500);
+      } catch (err) {
+        console.log(err);
+        showMessage(`${err.response.data.error}`, 'danger');
+      }
     });
   });
 }

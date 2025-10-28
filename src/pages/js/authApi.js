@@ -47,7 +47,7 @@ export default class AuthApi {
 
   async forgetPasswordSendOtp(email) {
     try {
-      const response = await this.api.post(`/forgot-password/sendOTP`, {
+      const response = await this.api.post(`/forgot-password/sendOtp`, {
         email,
       });
 
