@@ -1,7 +1,7 @@
 import '../scss/styles.scss';
 // eslint-disable-next-line no-unused-vars
 import * as bootstrap from 'bootstrap';
-import AuthApi from '../pages/js/authApi.js';
+import AuthApi from '../pages/js/AuthApi.js';
 import { showMessage } from '../pages/js/message.js';
 
 function editProfile() {
