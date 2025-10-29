@@ -45,7 +45,7 @@ async function handleSignup(event) {
     }, 1000);
   } catch (error) {
     console.error('Registration error:', error);
-    showMessage(error.error);
+    showMessage(`${error.error}`, 'danger');
     if (
       error.message.includes('Failed to fetch') ||
       error.message.includes('NetworkError')

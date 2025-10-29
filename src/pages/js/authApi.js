@@ -10,7 +10,7 @@ export default class AuthApi {
     try {
       const response = await this.api.post(`/sign-up`, { email, password });
 
-      console.log(response);
+      console.log('response: ', response);
     } catch (error) {
       throw error.response.data;
     }
